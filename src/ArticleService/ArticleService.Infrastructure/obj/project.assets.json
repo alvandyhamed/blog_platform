@@ -66,6 +66,19 @@
           }
         }
       },
+      "ArticleService.Application/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v9.0",
+        "dependencies": {
+          "ArticleService.Domain": "1.0.0"
+        },
+        "compile": {
+          "bin/placeholder/ArticleService.Application.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/ArticleService.Application.dll": {}
+        }
+      },
       "ArticleService.Domain/1.0.0": {
         "type": "project",
         "framework": ".NETCoreApp,Version=v9.0",
@@ -218,6 +231,11 @@
         "postgresql.png"
       ]
     },
+    "ArticleService.Application/1.0.0": {
+      "type": "project",
+      "path": "../ArticleService.Application/ArticleService.Application.csproj",
+      "msbuildProject": "../ArticleService.Application/ArticleService.Application.csproj"
+    },
     "ArticleService.Domain/1.0.0": {
       "type": "project",
       "path": "../ArticleService.Domain/ArticleService.Domain.csproj",
@@ -226,6 +244,7 @@
   },
   "projectFileDependencyGroups": {
     "net9.0": [
+      "ArticleService.Application >= 1.0.0",
       "ArticleService.Domain >= 1.0.0",
       "Dapper >= 2.1.66",
       "Npgsql >= 10.0.1"
@@ -256,6 +275,9 @@
         "net9.0": {
           "targetAlias": "net9.0",
           "projectReferences": {
+            "/Users/hamed/Documents/MySource/BlogPlatform/src/ArticleService/ArticleService.Application/ArticleService.Application.csproj": {
+              "projectPath": "/Users/hamed/Documents/MySource/BlogPlatform/src/ArticleService/ArticleService.Application/ArticleService.Application.csproj"
+            },
             "/Users/hamed/Documents/MySource/BlogPlatform/src/ArticleService/ArticleService.Domain/ArticleService.Domain.csproj": {
               "projectPath": "/Users/hamed/Documents/MySource/BlogPlatform/src/ArticleService/ArticleService.Domain/ArticleService.Domain.csproj"
             }

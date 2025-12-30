@@ -46,3 +46,7 @@
 /Users/hamed/Documents/MySource/BlogPlatform/src/ArticleService/ArticleService.Api/bin/Debug/net9.0/Swashbuckle.AspNetCore.SwaggerGen.dll
 /Users/hamed/Documents/MySource/BlogPlatform/src/ArticleService/ArticleService.Api/bin/Debug/net9.0/Swashbuckle.AspNetCore.SwaggerUI.dll
 /Users/hamed/Documents/MySource/BlogPlatform/src/ArticleService/ArticleService.Api/bin/Debug/net9.0/System.IdentityModel.Tokens.Jwt.dll
+/Users/hamed/Documents/MySource/BlogPlatform/src/ArticleService/ArticleService.Api/bin/Debug/net9.0/Dapper.dll
+/Users/hamed/Documents/MySource/BlogPlatform/src/ArticleService/ArticleService.Api/bin/Debug/net9.0/Npgsql.dll
+/Users/hamed/Documents/MySource/BlogPlatform/src/ArticleService/ArticleService.Api/bin/Debug/net9.0/ArticleService.Infrastructure.dll
+/Users/hamed/Documents/MySource/BlogPlatform/src/ArticleService/ArticleService.Api/bin/Debug/net9.0/ArticleService.Infrastructure.pdb

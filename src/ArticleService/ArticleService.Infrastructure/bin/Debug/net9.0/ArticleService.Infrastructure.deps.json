@@ -8,6 +8,7 @@
     ".NETCoreApp,Version=v9.0": {
       "ArticleService.Infrastructure/1.0.0": {
         "dependencies": {
+          "ArticleService.Application": "1.0.0",
           "ArticleService.Domain": "1.0.0",
           "Dapper": "2.1.66",
           "Npgsql": "10.0.1"
@@ -54,6 +55,17 @@
           }
         }
       },
+      "ArticleService.Application/1.0.0": {
+        "dependencies": {
+          "ArticleService.Domain": "1.0.0"
+        },
+        "runtime": {
+          "ArticleService.Application.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      },
       "ArticleService.Domain/1.0.0": {
         "runtime": {
           "ArticleService.Domain.dll": {
@@ -97,6 +109,11 @@
       "sha512": "sha512-XyUcxEfqlFomhNTG/ZdGlec+uSOQArKz0Mzz8jYKP/Jj9GM2YabU5CVZtp0yiC4f9hRp+tRZTnHMatJeJ3rwgw==",
       "path": "npgsql/10.0.1",
       "hashPath": "npgsql.10.0.1.nupkg.sha512"
+    },
+    "ArticleService.Application/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
     },
     "ArticleService.Domain/1.0.0": {
       "type": "project",
