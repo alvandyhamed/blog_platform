@@ -1,0 +1,16 @@
+/Users/hamed/Documents/MySource/BlogPlatform/src/ArticleService/ArticleService.Application/bin/Debug/net9.0/ArticleService.Application.deps.json
+/Users/hamed/Documents/MySource/BlogPlatform/src/ArticleService/ArticleService.Application/bin/Debug/net9.0/ArticleService.Application.dll
+/Users/hamed/Documents/MySource/BlogPlatform/src/ArticleService/ArticleService.Application/bin/Debug/net9.0/ArticleService.Application.pdb
+/Users/hamed/Documents/MySource/BlogPlatform/src/ArticleService/ArticleService.Application/bin/Debug/net9.0/ArticleService.Domain.dll
+/Users/hamed/Documents/MySource/BlogPlatform/src/ArticleService/ArticleService.Application/bin/Debug/net9.0/ArticleService.Domain.pdb
+/Users/hamed/Documents/MySource/BlogPlatform/src/ArticleService/ArticleService.Application/obj/Debug/net9.0/ArticleService.Application.csproj.AssemblyReference.cache
+/Users/hamed/Documents/MySource/BlogPlatform/src/ArticleService/ArticleService.Application/obj/Debug/net9.0/ArticleService.Application.GeneratedMSBuildEditorConfig.editorconfig
+/Users/hamed/Documents/MySource/BlogPlatform/src/ArticleService/ArticleService.Application/obj/Debug/net9.0/ArticleService.Application.AssemblyInfoInputs.cache
+/Users/hamed/Documents/MySource/BlogPlatform/src/ArticleService/ArticleService.Application/obj/Debug/net9.0/ArticleService.Application.AssemblyInfo.cs
+/Users/hamed/Documents/MySource/BlogPlatform/src/ArticleService/ArticleService.Application/obj/Debug/net9.0/ArticleService.Application.csproj.CoreCompileInputs.cache
+/Users/hamed/Documents/MySource/BlogPlatform/src/ArticleService/ArticleService.Application/obj/Debug/net9.0/ArticleService.Application.sourcelink.json
+/Users/hamed/Documents/MySource/BlogPlatform/src/ArticleService/ArticleService.Application/obj/Debug/net9.0/ArticleS.0BAAA9C0.Up2Date
+/Users/hamed/Documents/MySource/BlogPlatform/src/ArticleService/ArticleService.Application/obj/Debug/net9.0/ArticleService.Application.dll
+/Users/hamed/Documents/MySource/BlogPlatform/src/ArticleService/ArticleService.Application/obj/Debug/net9.0/refint/ArticleService.Application.dll
+/Users/hamed/Documents/MySource/BlogPlatform/src/ArticleService/ArticleService.Application/obj/Debug/net9.0/ArticleService.Application.pdb
+/Users/hamed/Documents/MySource/BlogPlatform/src/ArticleService/ArticleService.Application/obj/Debug/net9.0/ref/ArticleService.Application.dll

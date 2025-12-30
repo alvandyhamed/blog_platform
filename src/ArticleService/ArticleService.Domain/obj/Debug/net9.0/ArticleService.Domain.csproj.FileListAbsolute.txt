@@ -1,0 +1,12 @@
+/Users/hamed/Documents/MySource/BlogPlatform/src/ArticleService/ArticleService.Domain/bin/Debug/net9.0/ArticleService.Domain.deps.json
+/Users/hamed/Documents/MySource/BlogPlatform/src/ArticleService/ArticleService.Domain/bin/Debug/net9.0/ArticleService.Domain.dll
+/Users/hamed/Documents/MySource/BlogPlatform/src/ArticleService/ArticleService.Domain/bin/Debug/net9.0/ArticleService.Domain.pdb
+/Users/hamed/Documents/MySource/BlogPlatform/src/ArticleService/ArticleService.Domain/obj/Debug/net9.0/ArticleService.Domain.GeneratedMSBuildEditorConfig.editorconfig
+/Users/hamed/Documents/MySource/BlogPlatform/src/ArticleService/ArticleService.Domain/obj/Debug/net9.0/ArticleService.Domain.AssemblyInfoInputs.cache
+/Users/hamed/Documents/MySource/BlogPlatform/src/ArticleService/ArticleService.Domain/obj/Debug/net9.0/ArticleService.Domain.AssemblyInfo.cs
+/Users/hamed/Documents/MySource/BlogPlatform/src/ArticleService/ArticleService.Domain/obj/Debug/net9.0/ArticleService.Domain.csproj.CoreCompileInputs.cache
+/Users/hamed/Documents/MySource/BlogPlatform/src/ArticleService/ArticleService.Domain/obj/Debug/net9.0/ArticleService.Domain.sourcelink.json
+/Users/hamed/Documents/MySource/BlogPlatform/src/ArticleService/ArticleService.Domain/obj/Debug/net9.0/ArticleService.Domain.dll
+/Users/hamed/Documents/MySource/BlogPlatform/src/ArticleService/ArticleService.Domain/obj/Debug/net9.0/refint/ArticleService.Domain.dll
+/Users/hamed/Documents/MySource/BlogPlatform/src/ArticleService/ArticleService.Domain/obj/Debug/net9.0/ArticleService.Domain.pdb
+/Users/hamed/Documents/MySource/BlogPlatform/src/ArticleService/ArticleService.Domain/obj/Debug/net9.0/ref/ArticleService.Domain.dll
