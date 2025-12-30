@@ -48,6 +48,7 @@
 /Users/hamed/Documents/MySource/BlogPlatform/src/IdentityService/IdentityService.Api/obj/Debug/net9.0/IdentityService.Api.csproj.CoreCompileInputs.cache
 /Users/hamed/Documents/MySource/BlogPlatform/src/IdentityService/IdentityService.Api/obj/Debug/net9.0/IdentityService.Api.MvcApplicationPartsAssemblyInfo.cs
 /Users/hamed/Documents/MySource/BlogPlatform/src/IdentityService/IdentityService.Api/obj/Debug/net9.0/IdentityService.Api.MvcApplicationPartsAssemblyInfo.cache
+/Users/hamed/Documents/MySource/BlogPlatform/src/IdentityService/IdentityService.Api/obj/Debug/net9.0/IdentityService.Api.sourcelink.json
 /Users/hamed/Documents/MySource/BlogPlatform/src/IdentityService/IdentityService.Api/obj/Debug/net9.0/rjimswa.dswa.cache.json
 /Users/hamed/Documents/MySource/BlogPlatform/src/IdentityService/IdentityService.Api/obj/Debug/net9.0/rjsmrazor.dswa.cache.json
 /Users/hamed/Documents/MySource/BlogPlatform/src/IdentityService/IdentityService.Api/obj/Debug/net9.0/rjsmcshtml.dswa.cache.json
@@ -62,4 +63,3 @@
 /Users/hamed/Documents/MySource/BlogPlatform/src/IdentityService/IdentityService.Api/obj/Debug/net9.0/IdentityService.Api.pdb
 /Users/hamed/Documents/MySource/BlogPlatform/src/IdentityService/IdentityService.Api/obj/Debug/net9.0/IdentityService.Api.genruntimeconfig.cache
 /Users/hamed/Documents/MySource/BlogPlatform/src/IdentityService/IdentityService.Api/obj/Debug/net9.0/ref/IdentityService.Api.dll
-/Users/hamed/Documents/MySource/BlogPlatform/src/IdentityService/IdentityService.Api/obj/Debug/net9.0/IdentityService.Api.sourcelink.json

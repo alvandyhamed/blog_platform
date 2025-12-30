@@ -7,7 +7,9 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using ArticleService.Application.Services;
 using Microsoft.OpenApi.Models;
+using IdentityService.Grpc;
 
+AppContext.SetSwitch("System.Net.Http.SocketsHttpHandler.Http2UnencryptedSupport", true);
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
 
@@ -47,6 +49,11 @@ builder.Services.AddSwaggerGen(c =>
     {
         { jwtSecurityScheme, Array.Empty<string>() }
     });
+});
+builder.Services.AddGrpcClient<UserService.UserServiceClient>(o =>
+{
+    o.Address = new Uri(builder.Configuration["IdentityService:GrpcUrl"]
+        ?? throw new Exception("IdentityService:GrpcUrl not configured"));
 });
 
 // ConnectionFactory برای articles_db

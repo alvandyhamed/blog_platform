@@ -37,4 +37,27 @@ public class UserRoleRepository : IUserRoleRepository
 
         await conn.ExecuteAsync(sql, userRole);
     }
+    public async Task<IReadOnlyList<string>> GetUserRolesAsync(
+    Guid userId,
+    CancellationToken cancellationToken = default)
+    {
+        const string sql = @"
+SELECT r.name
+FROM user_roles ur
+JOIN roles r ON ur.role_id = r.id
+WHERE ur.user_id = @UserId;
+";
+
+        using var conn = _connectionFactory.CreateConnection();
+        conn.Open();
+
+        var result = await conn.QueryAsync<string>(
+            new CommandDefinition(
+                sql,
+                new { UserId = userId },
+                cancellationToken: cancellationToken
+            ));
+
+        return result.AsList();
+    }
 }

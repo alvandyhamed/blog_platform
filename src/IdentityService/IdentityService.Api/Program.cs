@@ -7,6 +7,8 @@ using IdentityService.Infrastructure.Auth;
 using IdentityService.Infrastructure.Data;
 using IdentityService.Infrastructure.Repositories;
 using Microsoft.OpenApi.Models;
+using IdentityService.Api.Grpc;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -52,6 +54,11 @@ builder.Services.AddSwaggerGen(options =>
             Array.Empty<string>()
         }
     });
+});
+builder.WebHost.ConfigureKestrel(options =>
+{
+    options.ListenLocalhost(5089, o => o.Protocols = HttpProtocols.Http2); // برای grpc
+    options.ListenLocalhost(5090, o => o.Protocols = HttpProtocols.Http1); // برای swagger و rest
 });
 
 
@@ -127,6 +134,9 @@ if (!string.IsNullOrWhiteSpace(signingKey))
 
 // REST Controllers
 app.MapControllers();
+
+app.MapGrpcService<UserGrpcService>();
+app.MapGet("/", () => "IdentityService gRPC endpoint. Use a gRPC client.");
 
 // gRPC endpoints (فعلاً placeholder، بعداً سرویس واقعی اضافه می‌کنیم)
 // app.MapGrpcService<IdentityGrpcService>();

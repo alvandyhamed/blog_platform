@@ -5,8 +5,8 @@
 /Users/hamed/Documents/MySource/BlogPlatform/src/IdentityService/IdentityService.Domain/obj/Debug/net9.0/IdentityService.Domain.AssemblyInfoInputs.cache
 /Users/hamed/Documents/MySource/BlogPlatform/src/IdentityService/IdentityService.Domain/obj/Debug/net9.0/IdentityService.Domain.AssemblyInfo.cs
 /Users/hamed/Documents/MySource/BlogPlatform/src/IdentityService/IdentityService.Domain/obj/Debug/net9.0/IdentityService.Domain.csproj.CoreCompileInputs.cache
+/Users/hamed/Documents/MySource/BlogPlatform/src/IdentityService/IdentityService.Domain/obj/Debug/net9.0/IdentityService.Domain.sourcelink.json
 /Users/hamed/Documents/MySource/BlogPlatform/src/IdentityService/IdentityService.Domain/obj/Debug/net9.0/IdentityService.Domain.dll
 /Users/hamed/Documents/MySource/BlogPlatform/src/IdentityService/IdentityService.Domain/obj/Debug/net9.0/refint/IdentityService.Domain.dll
 /Users/hamed/Documents/MySource/BlogPlatform/src/IdentityService/IdentityService.Domain/obj/Debug/net9.0/IdentityService.Domain.pdb
 /Users/hamed/Documents/MySource/BlogPlatform/src/IdentityService/IdentityService.Domain/obj/Debug/net9.0/ref/IdentityService.Domain.dll
-/Users/hamed/Documents/MySource/BlogPlatform/src/IdentityService/IdentityService.Domain/obj/Debug/net9.0/IdentityService.Domain.sourcelink.json

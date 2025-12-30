@@ -4,6 +4,8 @@ using ArticleService.Application.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using IdentityService.Grpc;
 
 namespace ArticleService.Api.Controllers;
 
@@ -74,6 +76,25 @@ public class ArticlesController : ControllerBase
             return NotFound();
 
         return NoContent();
+    }
+
+    // فقط برای تست gRPC: اطلاعات نویسنده‌ی فعلی را از IdentityService می‌گیرد
+    [HttpGet("me-from-identity")]
+    [Authorize] // هر یوزر لاگین شده
+    public async Task<IActionResult> GetMeFromIdentity(
+        [FromServices] UserService.UserServiceClient identityClient)
+    {
+        var userIdClaim =
+            User.FindFirst(JwtRegisteredClaimNames.Sub) ??
+            User.FindFirst(ClaimTypes.NameIdentifier);
+
+        if (userIdClaim is null)
+            return Unauthorized("No user id in token");
+
+        var reply = await identityClient.GetUserByIdAsync(
+            new GetUserByIdRequest { Id = userIdClaim.Value });
+
+        return Ok(reply);
     }
 
 }

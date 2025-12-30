@@ -16,5 +16,25 @@
     <ProjectReference Include="..\ArticleService.Application\ArticleService.Application.csproj" />
     <ProjectReference Include="..\ArticleService.Infrastructure\ArticleService.Infrastructure.csproj" />
   </ItemGroup>
+  <ItemGroup>
+  <PackageReference Include="Grpc.Net.ClientFactory" Version="2.76.0" />
+  
+  <PackageReference Include="Grpc.Tools" Version="2.76.0">
+    <PrivateAssets>all</PrivateAssets>
+  </PackageReference>
+</ItemGroup>
+
+<ItemGroup>
+  <Protobuf Include="Protos/identity.proto" GrpcServices="Client" />
+</ItemGroup>
+<ItemGroup>
+  <PackageReference Include="Grpc.AspNetCore" Version="2.76.0" />
+  <PackageReference Include="Grpc.Net.ClientFactory" Version="2.76.0" />
+  <PackageReference Include="Grpc.Tools" Version="2.76.0">
+    <PrivateAssets>all</PrivateAssets>
+  </PackageReference>
+  <PackageReference Include="Google.Protobuf" Version="3.31.1" />
+</ItemGroup>
+
 
 </Project>

@@ -1,8 +1,10 @@
 /Users/hamed/Documents/MySource/BlogPlatform/src/ArticleService/ArticleService.Infrastructure/bin/Debug/net9.0/ArticleService.Infrastructure.deps.json
 /Users/hamed/Documents/MySource/BlogPlatform/src/ArticleService/ArticleService.Infrastructure/bin/Debug/net9.0/ArticleService.Infrastructure.dll
 /Users/hamed/Documents/MySource/BlogPlatform/src/ArticleService/ArticleService.Infrastructure/bin/Debug/net9.0/ArticleService.Infrastructure.pdb
+/Users/hamed/Documents/MySource/BlogPlatform/src/ArticleService/ArticleService.Infrastructure/bin/Debug/net9.0/ArticleService.Application.dll
 /Users/hamed/Documents/MySource/BlogPlatform/src/ArticleService/ArticleService.Infrastructure/bin/Debug/net9.0/ArticleService.Domain.dll
 /Users/hamed/Documents/MySource/BlogPlatform/src/ArticleService/ArticleService.Infrastructure/bin/Debug/net9.0/ArticleService.Domain.pdb
+/Users/hamed/Documents/MySource/BlogPlatform/src/ArticleService/ArticleService.Infrastructure/bin/Debug/net9.0/ArticleService.Application.pdb
 /Users/hamed/Documents/MySource/BlogPlatform/src/ArticleService/ArticleService.Infrastructure/obj/Debug/net9.0/ArticleService.Infrastructure.csproj.AssemblyReference.cache
 /Users/hamed/Documents/MySource/BlogPlatform/src/ArticleService/ArticleService.Infrastructure/obj/Debug/net9.0/ArticleService.Infrastructure.GeneratedMSBuildEditorConfig.editorconfig
 /Users/hamed/Documents/MySource/BlogPlatform/src/ArticleService/ArticleService.Infrastructure/obj/Debug/net9.0/ArticleService.Infrastructure.AssemblyInfoInputs.cache
@@ -14,5 +16,3 @@
 /Users/hamed/Documents/MySource/BlogPlatform/src/ArticleService/ArticleService.Infrastructure/obj/Debug/net9.0/refint/ArticleService.Infrastructure.dll
 /Users/hamed/Documents/MySource/BlogPlatform/src/ArticleService/ArticleService.Infrastructure/obj/Debug/net9.0/ArticleService.Infrastructure.pdb
 /Users/hamed/Documents/MySource/BlogPlatform/src/ArticleService/ArticleService.Infrastructure/obj/Debug/net9.0/ref/ArticleService.Infrastructure.dll
-/Users/hamed/Documents/MySource/BlogPlatform/src/ArticleService/ArticleService.Infrastructure/bin/Debug/net9.0/ArticleService.Application.dll
-/Users/hamed/Documents/MySource/BlogPlatform/src/ArticleService/ArticleService.Infrastructure/bin/Debug/net9.0/ArticleService.Application.pdb

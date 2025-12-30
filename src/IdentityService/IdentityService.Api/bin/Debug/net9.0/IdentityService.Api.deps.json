@@ -9,6 +9,7 @@
       "IdentityService.Api/1.0.0": {
         "dependencies": {
           "Grpc.AspNetCore": "2.76.0",
+          "Grpc.Tools": "2.76.0",
           "IdentityService.Application": "1.0.0",
           "IdentityService.Infrastructure": "1.0.0",
           "Microsoft.AspNetCore.Authentication.JwtBearer": "9.0.0",

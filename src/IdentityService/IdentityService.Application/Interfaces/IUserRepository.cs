@@ -5,8 +5,15 @@ namespace IdentityService.Application.Interfaces;
 public interface IUserRepository
 {
     Task<User?> GetByIdAsync(Guid id);
+
+
     Task<User?> GetByGoogleIdAsync(string googleId);
     Task<User?> GetByEmailAsync(string email);
+
+
+    Task<IReadOnlyList<string>> GetUserRolesAsync(
+       Guid userId,
+       CancellationToken cancellationToken = default);
 
     Task AddAsync(User user);
     Task UpdateAsync(User user);
