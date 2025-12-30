@@ -1,0 +1,17 @@
+/Users/hamed/Documents/MySource/BlogPlatform/src/IdentityService/IdentityService.Infrastructure/bin/Debug/net8.0/IdentityService.Infrastructure.deps.json
+/Users/hamed/Documents/MySource/BlogPlatform/src/IdentityService/IdentityService.Infrastructure/bin/Debug/net8.0/IdentityService.Infrastructure.dll
+/Users/hamed/Documents/MySource/BlogPlatform/src/IdentityService/IdentityService.Infrastructure/bin/Debug/net8.0/IdentityService.Infrastructure.pdb
+/Users/hamed/Documents/MySource/BlogPlatform/src/IdentityService/IdentityService.Infrastructure/bin/Debug/net8.0/IdentityService.Application.dll
+/Users/hamed/Documents/MySource/BlogPlatform/src/IdentityService/IdentityService.Infrastructure/bin/Debug/net8.0/IdentityService.Domain.dll
+/Users/hamed/Documents/MySource/BlogPlatform/src/IdentityService/IdentityService.Infrastructure/bin/Debug/net8.0/IdentityService.Application.pdb
+/Users/hamed/Documents/MySource/BlogPlatform/src/IdentityService/IdentityService.Infrastructure/bin/Debug/net8.0/IdentityService.Domain.pdb
+/Users/hamed/Documents/MySource/BlogPlatform/src/IdentityService/IdentityService.Infrastructure/obj/Debug/net8.0/IdentityService.Infrastructure.csproj.AssemblyReference.cache
+/Users/hamed/Documents/MySource/BlogPlatform/src/IdentityService/IdentityService.Infrastructure/obj/Debug/net8.0/IdentityService.Infrastructure.GeneratedMSBuildEditorConfig.editorconfig
+/Users/hamed/Documents/MySource/BlogPlatform/src/IdentityService/IdentityService.Infrastructure/obj/Debug/net8.0/IdentityService.Infrastructure.AssemblyInfoInputs.cache
+/Users/hamed/Documents/MySource/BlogPlatform/src/IdentityService/IdentityService.Infrastructure/obj/Debug/net8.0/IdentityService.Infrastructure.AssemblyInfo.cs
+/Users/hamed/Documents/MySource/BlogPlatform/src/IdentityService/IdentityService.Infrastructure/obj/Debug/net8.0/IdentityService.Infrastructure.csproj.CoreCompileInputs.cache
+/Users/hamed/Documents/MySource/BlogPlatform/src/IdentityService/IdentityService.Infrastructure/obj/Debug/net8.0/Identity.1C9B4358.Up2Date
+/Users/hamed/Documents/MySource/BlogPlatform/src/IdentityService/IdentityService.Infrastructure/obj/Debug/net8.0/IdentityService.Infrastructure.dll
+/Users/hamed/Documents/MySource/BlogPlatform/src/IdentityService/IdentityService.Infrastructure/obj/Debug/net8.0/refint/IdentityService.Infrastructure.dll
+/Users/hamed/Documents/MySource/BlogPlatform/src/IdentityService/IdentityService.Infrastructure/obj/Debug/net8.0/IdentityService.Infrastructure.pdb
+/Users/hamed/Documents/MySource/BlogPlatform/src/IdentityService/IdentityService.Infrastructure/obj/Debug/net8.0/ref/IdentityService.Infrastructure.dll

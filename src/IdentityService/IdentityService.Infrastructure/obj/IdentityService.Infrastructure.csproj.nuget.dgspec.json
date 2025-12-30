@@ -1,0 +1,218 @@
+{
+  "format": 1,
+  "restore": {
+    "/Users/hamed/Documents/MySource/BlogPlatform/src/IdentityService/IdentityService.Infrastructure/IdentityService.Infrastructure.csproj": {}
+  },
+  "projects": {
+    "/Users/hamed/Documents/MySource/BlogPlatform/src/IdentityService/IdentityService.Application/IdentityService.Application.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "/Users/hamed/Documents/MySource/BlogPlatform/src/IdentityService/IdentityService.Application/IdentityService.Application.csproj",
+        "projectName": "IdentityService.Application",
+        "projectPath": "/Users/hamed/Documents/MySource/BlogPlatform/src/IdentityService/IdentityService.Application/IdentityService.Application.csproj",
+        "packagesPath": "/Users/hamed/.nuget/packages/",
+        "outputPath": "/Users/hamed/Documents/MySource/BlogPlatform/src/IdentityService/IdentityService.Application/obj/",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "/Users/hamed/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net9.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net9.0": {
+            "targetAlias": "net9.0",
+            "projectReferences": {
+              "/Users/hamed/Documents/MySource/BlogPlatform/src/IdentityService/IdentityService.Domain/IdentityService.Domain.csproj": {
+                "projectPath": "/Users/hamed/Documents/MySource/BlogPlatform/src/IdentityService/IdentityService.Domain/IdentityService.Domain.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "9.0.300"
+      },
+      "frameworks": {
+        "net9.0": {
+          "targetAlias": "net9.0",
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "/Users/hamed/.dotnet/sdk/9.0.308/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "/Users/hamed/Documents/MySource/BlogPlatform/src/IdentityService/IdentityService.Domain/IdentityService.Domain.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "/Users/hamed/Documents/MySource/BlogPlatform/src/IdentityService/IdentityService.Domain/IdentityService.Domain.csproj",
+        "projectName": "IdentityService.Domain",
+        "projectPath": "/Users/hamed/Documents/MySource/BlogPlatform/src/IdentityService/IdentityService.Domain/IdentityService.Domain.csproj",
+        "packagesPath": "/Users/hamed/.nuget/packages/",
+        "outputPath": "/Users/hamed/Documents/MySource/BlogPlatform/src/IdentityService/IdentityService.Domain/obj/",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "/Users/hamed/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net9.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net9.0": {
+            "targetAlias": "net9.0",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "9.0.300"
+      },
+      "frameworks": {
+        "net9.0": {
+          "targetAlias": "net9.0",
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "/Users/hamed/.dotnet/sdk/9.0.308/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "/Users/hamed/Documents/MySource/BlogPlatform/src/IdentityService/IdentityService.Infrastructure/IdentityService.Infrastructure.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "/Users/hamed/Documents/MySource/BlogPlatform/src/IdentityService/IdentityService.Infrastructure/IdentityService.Infrastructure.csproj",
+        "projectName": "IdentityService.Infrastructure",
+        "projectPath": "/Users/hamed/Documents/MySource/BlogPlatform/src/IdentityService/IdentityService.Infrastructure/IdentityService.Infrastructure.csproj",
+        "packagesPath": "/Users/hamed/.nuget/packages/",
+        "outputPath": "/Users/hamed/Documents/MySource/BlogPlatform/src/IdentityService/IdentityService.Infrastructure/obj/",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "/Users/hamed/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net9.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net9.0": {
+            "targetAlias": "net9.0",
+            "projectReferences": {
+              "/Users/hamed/Documents/MySource/BlogPlatform/src/IdentityService/IdentityService.Application/IdentityService.Application.csproj": {
+                "projectPath": "/Users/hamed/Documents/MySource/BlogPlatform/src/IdentityService/IdentityService.Application/IdentityService.Application.csproj"
+              },
+              "/Users/hamed/Documents/MySource/BlogPlatform/src/IdentityService/IdentityService.Domain/IdentityService.Domain.csproj": {
+                "projectPath": "/Users/hamed/Documents/MySource/BlogPlatform/src/IdentityService/IdentityService.Domain/IdentityService.Domain.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "9.0.300"
+      },
+      "frameworks": {
+        "net9.0": {
+          "targetAlias": "net9.0",
+          "dependencies": {
+            "Dapper": {
+              "target": "Package",
+              "version": "[2.1.66, )"
+            },
+            "Microsoft.Extensions.Configuration.Abstractions": {
+              "target": "Package",
+              "version": "[10.0.1, )"
+            },
+            "Microsoft.Extensions.Options.ConfigurationExtensions": {
+              "target": "Package",
+              "version": "[10.0.1, )"
+            },
+            "Npgsql": {
+              "target": "Package",
+              "version": "[10.0.1, )"
+            },
+            "System.IdentityModel.Tokens.Jwt": {
+              "target": "Package",
+              "version": "[8.15.0, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "/Users/hamed/.dotnet/sdk/9.0.308/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    }
+  }
+}

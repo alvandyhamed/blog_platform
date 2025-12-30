@@ -1,0 +1,15 @@
+/Users/hamed/Documents/MySource/BlogPlatform/src/IdentityService/IdentityService.Application/bin/Debug/net8.0/IdentityService.Application.deps.json
+/Users/hamed/Documents/MySource/BlogPlatform/src/IdentityService/IdentityService.Application/bin/Debug/net8.0/IdentityService.Application.dll
+/Users/hamed/Documents/MySource/BlogPlatform/src/IdentityService/IdentityService.Application/bin/Debug/net8.0/IdentityService.Application.pdb
+/Users/hamed/Documents/MySource/BlogPlatform/src/IdentityService/IdentityService.Application/bin/Debug/net8.0/IdentityService.Domain.dll
+/Users/hamed/Documents/MySource/BlogPlatform/src/IdentityService/IdentityService.Application/bin/Debug/net8.0/IdentityService.Domain.pdb
+/Users/hamed/Documents/MySource/BlogPlatform/src/IdentityService/IdentityService.Application/obj/Debug/net8.0/IdentityService.Application.csproj.AssemblyReference.cache
+/Users/hamed/Documents/MySource/BlogPlatform/src/IdentityService/IdentityService.Application/obj/Debug/net8.0/IdentityService.Application.GeneratedMSBuildEditorConfig.editorconfig
+/Users/hamed/Documents/MySource/BlogPlatform/src/IdentityService/IdentityService.Application/obj/Debug/net8.0/IdentityService.Application.AssemblyInfoInputs.cache
+/Users/hamed/Documents/MySource/BlogPlatform/src/IdentityService/IdentityService.Application/obj/Debug/net8.0/IdentityService.Application.AssemblyInfo.cs
+/Users/hamed/Documents/MySource/BlogPlatform/src/IdentityService/IdentityService.Application/obj/Debug/net8.0/IdentityService.Application.csproj.CoreCompileInputs.cache
+/Users/hamed/Documents/MySource/BlogPlatform/src/IdentityService/IdentityService.Application/obj/Debug/net8.0/Identity.52144512.Up2Date
+/Users/hamed/Documents/MySource/BlogPlatform/src/IdentityService/IdentityService.Application/obj/Debug/net8.0/IdentityService.Application.dll
+/Users/hamed/Documents/MySource/BlogPlatform/src/IdentityService/IdentityService.Application/obj/Debug/net8.0/refint/IdentityService.Application.dll
+/Users/hamed/Documents/MySource/BlogPlatform/src/IdentityService/IdentityService.Application/obj/Debug/net8.0/IdentityService.Application.pdb
+/Users/hamed/Documents/MySource/BlogPlatform/src/IdentityService/IdentityService.Application/obj/Debug/net8.0/ref/IdentityService.Application.dll
