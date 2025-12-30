@@ -105,4 +105,78 @@ WHERE id = @Id;";
 
         return article;
     }
+
+
+    public async Task<IReadOnlyList<Article>> GetPublishedAsync(
+    int page,
+    int pageSize,
+    CancellationToken cancellationToken = default)
+    {
+        const string sql = @"
+SELECT
+    id,
+    author_id          AS AuthorId,
+    title,
+    slug,
+    summary,
+    content_md         AS ContentMd,
+    header_image_url   AS HeaderImageUrl,
+    status_id          AS StatusId,
+    read_time_minutes  AS ReadTimeMinutes,
+    meta_title         AS MetaTitle,
+    meta_description   AS MetaDescription,
+    keywords,
+    created_at         AS CreatedAt,
+    updated_at         AS UpdatedAt,
+    published_at       AS PublishedAt
+FROM articles
+WHERE status_id = 3              -- Published
+ORDER BY published_at DESC NULLS LAST, created_at DESC
+LIMIT @PageSize OFFSET @Offset;
+";
+
+        var offset = (page - 1) * pageSize;
+        if (offset < 0) offset = 0;
+
+        using var conn = _connectionFactory.CreateConnection();
+        conn.Open();
+
+        var results = await conn.QueryAsync<Article>(
+            new CommandDefinition(
+                sql,
+                new { PageSize = pageSize, Offset = offset },
+                cancellationToken: cancellationToken
+            ));
+
+        return results.ToList();
+    }
+
+    public async Task<bool> UpdateStatusAsync(
+        Guid id,
+        short statusId,
+        DateTimeOffset? publishedAt,
+        CancellationToken cancellationToken = default)
+    {
+        const string sql = @"
+UPDATE articles
+SET status_id   = @StatusId,
+    published_at = @PublishedAt,
+    updated_at   = NOW()
+WHERE id = @Id;
+";
+
+        using var conn = _connectionFactory.CreateConnection();
+        conn.Open();
+
+        var rows = await conn.ExecuteAsync(
+            new CommandDefinition(
+                sql,
+                new { Id = id, StatusId = statusId, PublishedAt = publishedAt },
+                cancellationToken: cancellationToken
+            ));
+
+        return rows > 0;
+    }
 }
+
+

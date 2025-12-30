@@ -6,4 +6,15 @@ public interface IArticleRepository
 {
     Task<Guid> CreateAsync(Article article, CancellationToken cancellationToken = default);
     Task<Article?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default);
+
+    Task<IReadOnlyList<Article>> GetPublishedAsync(
+        int page,
+        int pageSize,
+        CancellationToken cancellationToken = default);
+
+    Task<bool> UpdateStatusAsync(
+        Guid id,
+        short statusId,
+        DateTimeOffset? publishedAt,
+        CancellationToken cancellationToken = default);
 }

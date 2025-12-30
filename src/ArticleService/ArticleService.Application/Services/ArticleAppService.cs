@@ -10,6 +10,7 @@ public class ArticleAppService : IArticleService
 
     // Draft = 1, PendingReview = 2, Published = 3, Rejected = 4 (طبق اسکریپت SQL قبلی)
     private const short PendingReviewStatusId = 2;
+    private const short PublishedStatusId = 3;
 
     public ArticleAppService(IArticleRepository repository)
     {
@@ -99,5 +100,43 @@ public class ArticleAppService : IArticleService
         var wordCount = words.Length;
         var minutes = (int)Math.Ceiling(wordCount / 200.0);
         return minutes <= 0 ? 1 : minutes;
+    }
+
+    public async Task<IReadOnlyList<ArticleDto>> GetPublishedAsync(
+    int page,
+    int pageSize,
+    CancellationToken cancellationToken = default)
+    {
+        var articles = await _repository.GetPublishedAsync(page, pageSize, cancellationToken);
+
+        return articles
+            .Select(a => new ArticleDto
+            {
+                Id = a.Id,
+                AuthorId = a.AuthorId,
+                Title = a.Title,
+                Slug = a.Slug,
+                Summary = a.Summary,
+                ContentMd = a.ContentMd,
+                HeaderImageUrl = a.HeaderImageUrl,
+                StatusId = a.StatusId,
+                ReadTimeMinutes = a.ReadTimeMinutes,
+                MetaTitle = a.MetaTitle,
+                MetaDescription = a.MetaDescription,
+                Keywords = a.Keywords,
+                CreatedAt = a.CreatedAt,
+                PublishedAt = a.PublishedAt
+            })
+            .ToList();
+    }
+
+    public async Task<bool> ApproveAsync(Guid id, CancellationToken cancellationToken = default)
+    {
+        var now = DateTimeOffset.UtcNow;
+        return await _repository.UpdateStatusAsync(
+            id,
+            PublishedStatusId,
+            now,
+            cancellationToken);
     }
 }

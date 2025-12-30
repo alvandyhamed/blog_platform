@@ -50,4 +50,30 @@ public class ArticlesController : ControllerBase
 
         return Ok(article);
     }
+    // لیست مقالات منتشرشده – برای کاربرهای عادی
+    [HttpGet]
+    [AllowAnonymous]
+    public async Task<IActionResult> GetPublished(
+        [FromQuery] int page = 1,
+        [FromQuery] int pageSize = 10,
+        CancellationToken cancellationToken = default)
+    {
+        if (page <= 0) page = 1;
+        if (pageSize <= 0 || pageSize > 50) pageSize = 10;
+
+        var articles = await _articleService.GetPublishedAsync(page, pageSize, cancellationToken);
+        return Ok(articles);
+    }
+    // تأیید (Publish) مقاله – فقط Admin
+    [HttpPost("{id:guid}/approve")]
+    [Authorize(Roles = "Admin")]
+    public async Task<IActionResult> Approve(Guid id, CancellationToken cancellationToken)
+    {
+        var success = await _articleService.ApproveAsync(id, cancellationToken);
+        if (!success)
+            return NotFound();
+
+        return NoContent();
+    }
+
 }
