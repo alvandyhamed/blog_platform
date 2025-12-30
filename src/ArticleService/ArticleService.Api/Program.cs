@@ -6,6 +6,7 @@ using ArticleService.Infrastructure.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using ArticleService.Application.Services;
+using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
@@ -15,7 +16,14 @@ builder.Services.AddControllers();
 
 // Swagger پایه
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Title = "ArticleService API",
+        Version = "v1"
+    });
+});
 
 // ConnectionFactory برای articles_db
 var articlesConnectionString = configuration.GetConnectionString("ArticlesDb")
@@ -61,6 +69,12 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseRouting();
+
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
 
 app.UseAuthentication();
 app.UseAuthorization();
