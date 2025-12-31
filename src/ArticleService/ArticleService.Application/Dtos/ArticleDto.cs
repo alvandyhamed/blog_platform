@@ -18,6 +18,7 @@ public class ArticleDto
     public string? MetaTitle { get; set; }
     public string? MetaDescription { get; set; }
     public string[]? Keywords { get; set; }
+    public List<ArticleImageDto> Images { get; set; } = new();
 
     public DateTimeOffset CreatedAt { get; set; }
     public DateTimeOffset? PublishedAt { get; set; }

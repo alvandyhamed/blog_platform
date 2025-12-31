@@ -7,14 +7,19 @@ namespace ArticleService.Application.Services;
 public class ArticleAppService : IArticleService
 {
     private readonly IArticleRepository _repository;
+    private readonly IArticleImageRepository _articleImageRepository;
+
+
+
 
     // Draft = 1, PendingReview = 2, Published = 3, Rejected = 4 (طبق اسکریپت SQL قبلی)
     private const short PendingReviewStatusId = 2;
     private const short PublishedStatusId = 3;
 
-    public ArticleAppService(IArticleRepository repository)
+    public ArticleAppService(IArticleRepository repository, IArticleImageRepository articleImageRepository)
     {
         _repository = repository;
+        _articleImageRepository = articleImageRepository;
     }
 
     public async Task<Guid> CreateArticleAsync(CreateArticleRequest request, Guid authorId, CancellationToken cancellationToken = default)
@@ -41,8 +46,30 @@ public class ArticleAppService : IArticleService
             CreatedAt = DateTimeOffset.UtcNow,
             PublishedAt = null
         };
+        await _repository.CreateAsync(article, cancellationToken);
 
-        return await _repository.CreateAsync(article, cancellationToken);
+
+
+        // ۳) ذخیره‌ی عکس‌های متن در جدول article_images
+        if (request.Images is { Count: > 0 })
+        {
+            var now = DateTimeOffset.UtcNow;
+
+            var images = request.Images.Select((img, index) => new ArticleImage
+            {
+                ArticleId = article.Id,
+                ImageUrl = img.ImageUrl,
+                Caption = img.Caption,
+                AltText = img.AltText,
+                SortOrder = index,   // یا img.SortOrder اگر تو DTO داری
+                CreatedAt = now
+            });
+
+            await _articleImageRepository.AddRangeAsync(images, cancellationToken);
+        }
+
+        // ۴) برگردوندن Id مقاله
+        return article.Id;
     }
 
     public async Task<ArticleDto?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
@@ -50,6 +77,9 @@ public class ArticleAppService : IArticleService
         var article = await _repository.GetByIdAsync(id, cancellationToken);
         if (article is null)
             return null;
+        var images = await _articleImageRepository.GetByArticleIdAsync(id, cancellationToken);
+        var imagesLookup = images.ToLookup(i => i.ArticleId);
+
 
         return new ArticleDto
         {
@@ -65,8 +95,16 @@ public class ArticleAppService : IArticleService
             MetaTitle = article.MetaTitle,
             MetaDescription = article.MetaDescription,
             Keywords = article.Keywords,
+            Images = images.Select(img => new ArticleImageDto
+            {
+                ImageUrl = img.ImageUrl,
+                Caption = img.Caption,
+                AltText = img.AltText,
+                SortOrder = img.SortOrder ?? 0
+            }).ToList(),
             CreatedAt = article.CreatedAt,
-            PublishedAt = article.PublishedAt
+            PublishedAt = article.PublishedAt,
+
         };
     }
 
@@ -108,26 +146,44 @@ public class ArticleAppService : IArticleService
     CancellationToken cancellationToken = default)
     {
         var articles = await _repository.GetPublishedAsync(page, pageSize, cancellationToken);
+        var result = new List<ArticleDto>();
+        foreach (var a in articles)
+        {
+            var images = await _articleImageRepository.GetByArticleIdAsync(a.Id, cancellationToken);
+            result.Add(
+                new ArticleDto
+                {
+                    Id = a.Id,
+                    AuthorId = a.AuthorId,
+                    Title = a.Title,
+                    Slug = a.Slug,
+                    Summary = a.Summary,
+                    ContentMd = a.ContentMd,
+                    HeaderImageUrl = a.HeaderImageUrl,
+                    StatusId = a.StatusId,
+                    ReadTimeMinutes = a.ReadTimeMinutes,
+                    MetaTitle = a.MetaTitle,
+                    MetaDescription = a.MetaDescription,
+                    Keywords = a.Keywords,
+                    CreatedAt = a.CreatedAt,
+                    PublishedAt = a.PublishedAt,
+                    Images = images
+                .Select(img => new ArticleImageDto
+                {
+                    ImageUrl = img.ImageUrl,
+                    Caption = img.Caption,
+                    AltText = img.AltText,
+                    SortOrder = img.SortOrder ?? 0
+                })
+                .ToList()
 
-        return articles
-            .Select(a => new ArticleDto
-            {
-                Id = a.Id,
-                AuthorId = a.AuthorId,
-                Title = a.Title,
-                Slug = a.Slug,
-                Summary = a.Summary,
-                ContentMd = a.ContentMd,
-                HeaderImageUrl = a.HeaderImageUrl,
-                StatusId = a.StatusId,
-                ReadTimeMinutes = a.ReadTimeMinutes,
-                MetaTitle = a.MetaTitle,
-                MetaDescription = a.MetaDescription,
-                Keywords = a.Keywords,
-                CreatedAt = a.CreatedAt,
-                PublishedAt = a.PublishedAt
-            })
-            .ToList();
+                }
+            );
+        }
+        return result;
+
+
+
     }
 
     public async Task<bool> ApproveAsync(Guid id, CancellationToken cancellationToken = default)

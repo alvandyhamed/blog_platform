@@ -1,0 +1,22 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": ".NET Launch - ArticleService.Api",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build-all",
+            "program": "${workspaceFolder}/src/ArticleService/ArticleService.Api/bin/Debug/net9.0/ArticleService.Api.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}/src/ArticleService/ArticleService.Api",
+            "stopAtEntry": false,
+            "serverReadyAction": {
+                "action": "openExternally",
+                "pattern": "\\bNow listening on:\\s+(https?://\\S+)"
+            },
+            "env": {
+                "ASPNETCORE_ENVIRONMENT": "Development"
+            }
+        }
+    ]
+}
