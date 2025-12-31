@@ -6,6 +6,8 @@
 /Users/hamed/Documents/MySource/BlogPlatform/src/ArticleService/ArticleService.Api/bin/Debug/net9.0/ArticleService.Api.runtimeconfig.json
 /Users/hamed/Documents/MySource/BlogPlatform/src/ArticleService/ArticleService.Api/bin/Debug/net9.0/ArticleService.Api.dll
 /Users/hamed/Documents/MySource/BlogPlatform/src/ArticleService/ArticleService.Api/bin/Debug/net9.0/ArticleService.Api.pdb
+/Users/hamed/Documents/MySource/BlogPlatform/src/ArticleService/ArticleService.Api/bin/Debug/net9.0/AWSSDK.Core.dll
+/Users/hamed/Documents/MySource/BlogPlatform/src/ArticleService/ArticleService.Api/bin/Debug/net9.0/AWSSDK.S3.dll
 /Users/hamed/Documents/MySource/BlogPlatform/src/ArticleService/ArticleService.Api/bin/Debug/net9.0/Dapper.dll
 /Users/hamed/Documents/MySource/BlogPlatform/src/ArticleService/ArticleService.Api/bin/Debug/net9.0/Google.Protobuf.dll
 /Users/hamed/Documents/MySource/BlogPlatform/src/ArticleService/ArticleService.Api/bin/Debug/net9.0/Grpc.AspNetCore.Server.dll
@@ -16,6 +18,9 @@
 /Users/hamed/Documents/MySource/BlogPlatform/src/ArticleService/ArticleService.Api/bin/Debug/net9.0/Grpc.Net.Common.dll
 /Users/hamed/Documents/MySource/BlogPlatform/src/ArticleService/ArticleService.Api/bin/Debug/net9.0/Microsoft.AspNetCore.Authentication.JwtBearer.dll
 /Users/hamed/Documents/MySource/BlogPlatform/src/ArticleService/ArticleService.Api/bin/Debug/net9.0/Microsoft.AspNetCore.OpenApi.dll
+/Users/hamed/Documents/MySource/BlogPlatform/src/ArticleService/ArticleService.Api/bin/Debug/net9.0/Microsoft.Extensions.DependencyInjection.Abstractions.dll
+/Users/hamed/Documents/MySource/BlogPlatform/src/ArticleService/ArticleService.Api/bin/Debug/net9.0/Microsoft.Extensions.Options.dll
+/Users/hamed/Documents/MySource/BlogPlatform/src/ArticleService/ArticleService.Api/bin/Debug/net9.0/Microsoft.Extensions.Primitives.dll
 /Users/hamed/Documents/MySource/BlogPlatform/src/ArticleService/ArticleService.Api/bin/Debug/net9.0/Microsoft.IdentityModel.Abstractions.dll
 /Users/hamed/Documents/MySource/BlogPlatform/src/ArticleService/ArticleService.Api/bin/Debug/net9.0/Microsoft.IdentityModel.JsonWebTokens.dll
 /Users/hamed/Documents/MySource/BlogPlatform/src/ArticleService/ArticleService.Api/bin/Debug/net9.0/Microsoft.IdentityModel.Logging.dll

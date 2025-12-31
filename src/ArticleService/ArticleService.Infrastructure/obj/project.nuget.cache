@@ -1,12 +1,16 @@
 {
   "version": 2,
-  "dgSpecHash": "Kg1CCowQv9k=",
+  "dgSpecHash": "7+tb9zhmJF8=",
   "success": true,
   "projectFilePath": "/Users/hamed/Documents/MySource/BlogPlatform/src/ArticleService/ArticleService.Infrastructure/ArticleService.Infrastructure.csproj",
   "expectedPackageFiles": [
+    "/Users/hamed/.nuget/packages/awssdk.core/4.0.3.6/awssdk.core.4.0.3.6.nupkg.sha512",
+    "/Users/hamed/.nuget/packages/awssdk.s3/4.0.16.1/awssdk.s3.4.0.16.1.nupkg.sha512",
     "/Users/hamed/.nuget/packages/dapper/2.1.66/dapper.2.1.66.nupkg.sha512",
-    "/Users/hamed/.nuget/packages/microsoft.extensions.dependencyinjection.abstractions/9.0.0/microsoft.extensions.dependencyinjection.abstractions.9.0.0.nupkg.sha512",
+    "/Users/hamed/.nuget/packages/microsoft.extensions.dependencyinjection.abstractions/10.0.1/microsoft.extensions.dependencyinjection.abstractions.10.0.1.nupkg.sha512",
     "/Users/hamed/.nuget/packages/microsoft.extensions.logging.abstractions/9.0.0/microsoft.extensions.logging.abstractions.9.0.0.nupkg.sha512",
+    "/Users/hamed/.nuget/packages/microsoft.extensions.options/10.0.1/microsoft.extensions.options.10.0.1.nupkg.sha512",
+    "/Users/hamed/.nuget/packages/microsoft.extensions.primitives/10.0.1/microsoft.extensions.primitives.10.0.1.nupkg.sha512",
     "/Users/hamed/.nuget/packages/npgsql/10.0.1/npgsql.10.0.1.nupkg.sha512"
   ],
   "logs": []

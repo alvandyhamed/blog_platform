@@ -8,9 +8,33 @@ using Microsoft.IdentityModel.Tokens;
 using ArticleService.Application.Services;
 using Microsoft.OpenApi.Models;
 using IdentityService.Grpc;
+using Amazon.S3;
+using ArticleService.Application.Abstractions;
+using ArticleService.Infrastructure.Options;
+using ArticleService.Infrastructure.Services;
 
 AppContext.SetSwitch("System.Net.Http.SocketsHttpHandler.Http2UnencryptedSupport", true);
 var builder = WebApplication.CreateBuilder(args);
+// Bind Minio options
+builder.Services.Configure<MinioOptions>(
+    builder.Configuration.GetSection("Minio"));
+
+// ساخت کلاینت S3 برای MinIO
+builder.Services.AddSingleton<IAmazonS3>(sp =>
+{
+    var opts = sp.GetRequiredService<Microsoft.Extensions.Options.IOptions<MinioOptions>>().Value;
+
+    var config = new AmazonS3Config
+    {
+        ServiceURL = opts.Endpoint,   // "http://localhost:9000"
+        ForcePathStyle = true         // برای MinIO مهمه
+    };
+
+    return new AmazonS3Client(opts.AccessKey, opts.SecretKey, config);
+});
+
+// سرویس مدیا
+builder.Services.AddScoped<IMediaStorageService, S3MediaStorageService>();
 var configuration = builder.Configuration;
 
 // Controllers
