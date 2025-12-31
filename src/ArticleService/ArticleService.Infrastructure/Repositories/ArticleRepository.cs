@@ -107,6 +107,7 @@ WHERE id = @Id;";
     }
 
 
+
     public async Task<IReadOnlyList<Article>> GetPublishedAsync(
     int page,
     int pageSize,
@@ -149,6 +150,67 @@ LIMIT @PageSize OFFSET @Offset;
             ));
 
         return results.ToList();
+    }
+
+    public async Task<(IReadOnlyList<Article> Items, int TotalCount)> GetPublishedPagedAsync(
+        int page,
+        int pageSize,
+        string? search,
+        CancellationToken cancellationToken = default)
+    {
+        const string whereClause = @"
+            status_id = 3
+            AND (
+                @Search IS NULL OR @Search = '' OR
+                title ILIKE '%' || @Search || '%' OR
+                summary ILIKE '%' || @Search || '%'
+            )";
+
+        const string sqlList = $@"
+            SELECT *
+            FROM articles
+            WHERE {whereClause}
+            ORDER BY created_at DESC
+            LIMIT @PageSize OFFSET @Offset;";
+
+        const string sqlCount = $@"
+            SELECT COUNT(*)
+            FROM articles
+            WHERE {whereClause};";
+
+        using var conn = _connectionFactory.CreateConnection();
+
+        var offset = (page - 1) * pageSize;
+
+        var parameters = new
+        {
+            PageSize = pageSize,
+            Offset = offset,
+            Search = search
+        };
+
+        var items = (await conn.QueryAsync<Article>(sqlList, parameters))
+            .ToList();
+
+        var totalCount = await conn.ExecuteScalarAsync<int>(sqlCount, parameters);
+
+        return (items, totalCount);
+    }
+
+    public async Task<Article?> GetBySlugAsync(
+        string slug,
+        CancellationToken cancellationToken = default)
+    {
+        const string sql = @"
+            SELECT *
+            FROM articles
+            WHERE slug = @Slug
+              AND status_id = 3
+            LIMIT 1;";
+
+        using var conn = _connectionFactory.CreateConnection();
+
+        return await conn.QuerySingleOrDefaultAsync<Article>(sql, new { Slug = slug });
     }
 
     public async Task<bool> UpdateStatusAsync(

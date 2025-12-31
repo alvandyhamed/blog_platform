@@ -25,4 +25,5 @@ public class Article
     public DateTimeOffset CreatedAt { get; set; }
     public DateTimeOffset? UpdatedAt { get; set; }
     public DateTimeOffset? PublishedAt { get; set; }
+
 }

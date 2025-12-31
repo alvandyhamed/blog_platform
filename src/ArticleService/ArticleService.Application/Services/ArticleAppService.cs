@@ -1,157 +1,169 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using ArticleService.Application.Abstractions;
 using ArticleService.Application.Dtos;
 using ArticleService.Domain.Entities;
 
-namespace ArticleService.Application.Services;
-
-public class ArticleAppService : IArticleService
+namespace ArticleService.Application.Services
 {
-    private readonly IArticleRepository _repository;
-    private readonly IArticleImageRepository _articleImageRepository;
-
-
-
-
-    // Draft = 1, PendingReview = 2, Published = 3, Rejected = 4 (طبق اسکریپت SQL قبلی)
-    private const short PendingReviewStatusId = 2;
-    private const short PublishedStatusId = 3;
-
-    public ArticleAppService(IArticleRepository repository, IArticleImageRepository articleImageRepository)
+    public sealed class ArticleAppService : IArticleService
     {
-        _repository = repository;
-        _articleImageRepository = articleImageRepository;
-    }
+        private readonly IArticleRepository _repository;
+        private readonly IArticleImageRepository _articleImageRepository;
 
-    public async Task<Guid> CreateArticleAsync(CreateArticleRequest request, Guid authorId, CancellationToken cancellationToken = default)
-    {
-        // محاسبه اسلاگ
-        var slug = GenerateSlug(request.Title);
+        // Draft = 1, PendingReview = 2, Published = 3, Rejected = 4
+        private const short PendingReviewStatusId = 2;
+        private const short PublishedStatusId = 3;
 
-        // محاسبه تقریبی زمان مطالعه (200 کلمه در دقیقه)
-        var readTime = CalculateReadTimeMinutes(request.ContentMd);
-
-        var article = new Article
+        public ArticleAppService(
+            IArticleRepository repository,
+            IArticleImageRepository articleImageRepository)
         {
-            AuthorId = authorId,
-            Title = request.Title,
-            Slug = slug,
-            Summary = request.Summary,
-            ContentMd = request.ContentMd,
-            HeaderImageUrl = request.HeaderImageUrl,
-            StatusId = PendingReviewStatusId,
-            ReadTimeMinutes = readTime,
-            MetaTitle = request.MetaTitle,
-            MetaDescription = request.MetaDescription,
-            Keywords = request.Keywords,
-            CreatedAt = DateTimeOffset.UtcNow,
-            PublishedAt = null
-        };
-        await _repository.CreateAsync(article, cancellationToken);
+            _repository = repository;
+            _articleImageRepository = articleImageRepository;
+        }
 
+        #region Create
 
-
-        // ۳) ذخیره‌ی عکس‌های متن در جدول article_images
-        if (request.Images is { Count: > 0 })
+        public async Task<Guid> CreateArticleAsync(
+            CreateArticleRequest request,
+            Guid authorId,
+            CancellationToken cancellationToken = default)
         {
+            if (request is null)
+                throw new ArgumentNullException(nameof(request));
+
             var now = DateTimeOffset.UtcNow;
+            var slug = Slugify(request.Title);
 
-            var images = request.Images.Select((img, index) => new ArticleImage
+            var article = new Article
             {
-                ArticleId = article.Id,
-                ImageUrl = img.ImageUrl,
-                Caption = img.Caption,
-                AltText = img.AltText,
-                SortOrder = index,   // یا img.SortOrder اگر تو DTO داری
-                CreatedAt = now
-            });
+                Id = Guid.NewGuid(),
+                AuthorId = authorId,
+                Title = request.Title,
+                Slug = slug,
+                Summary = request.Summary,
+                ContentMd = request.ContentMd,
+                HeaderImageUrl = request.HeaderImageUrl,
+                StatusId = PendingReviewStatusId,
+                ReadTimeMinutes = CalculateReadTime(request.ContentMd),
+                MetaTitle = string.IsNullOrWhiteSpace(request.MetaTitle)
+                                      ? request.Title
+                                      : request.MetaTitle,
+                MetaDescription = request.MetaDescription,
+                Keywords = request.Keywords,
+                CreatedAt = now,
+                UpdatedAt = null,
+                PublishedAt = null
+            };
 
-            await _articleImageRepository.AddRangeAsync(images, cancellationToken);
+            // خود این متد INSERT روی جدول articles را انجام می‌دهد
+            await _repository.CreateAsync(article, cancellationToken);
+
+            // اگر برای این مقاله عکس‌های محتوا فرستاده شده باشد، در جدول article_images ذخیره کنیم
+            if (request.Images is { Count: > 0 })
+            {
+                var images = request.Images
+                    .Select((img, index) => new ArticleImage
+                    {
+                        ArticleId = article.Id,
+                        ImageUrl = img.ImageUrl,
+                        Caption = img.Caption,
+                        AltText = img.AltText,
+                        // ArticleImage.SortOrder = int است ولی در DTO احتمالاً int?؛
+                        // پس با ?? مقدار دهی می‌کنیم.
+                        SortOrder = img.SortOrder,
+                        CreatedAt = now
+                    });
+
+                await _articleImageRepository.AddRangeAsync(images, cancellationToken);
+            }
+
+            return article.Id;
         }
 
-        // ۴) برگردوندن Id مقاله
-        return article.Id;
-    }
+        #endregion
 
-    public async Task<ArticleDto?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
-    {
-        var article = await _repository.GetByIdAsync(id, cancellationToken);
-        if (article is null)
-            return null;
-        var images = await _articleImageRepository.GetByArticleIdAsync(id, cancellationToken);
-        var imagesLookup = images.ToLookup(i => i.ArticleId);
+        #region GetById
 
-
-        return new ArticleDto
+        public async Task<ArticleDto?> GetByIdAsync(
+            Guid id,
+            CancellationToken cancellationToken = default)
         {
-            Id = article.Id,
-            AuthorId = article.AuthorId,
-            Title = article.Title,
-            Slug = article.Slug,
-            Summary = article.Summary,
-            ContentMd = article.ContentMd,
-            HeaderImageUrl = article.HeaderImageUrl,
-            StatusId = article.StatusId,
-            ReadTimeMinutes = article.ReadTimeMinutes,
-            MetaTitle = article.MetaTitle,
-            MetaDescription = article.MetaDescription,
-            Keywords = article.Keywords,
-            Images = images.Select(img => new ArticleImageDto
+            var article = await _repository.GetByIdAsync(id, cancellationToken);
+            if (article is null)
+                return null;
+
+            // تصاویر همین مقاله
+            var images = await _articleImageRepository
+                .GetByArticleIdAsync(article.Id, cancellationToken);
+
+            return new ArticleDto
             {
-                ImageUrl = img.ImageUrl,
-                Caption = img.Caption,
-                AltText = img.AltText,
-                SortOrder = img.SortOrder ?? 0
-            }).ToList(),
-            CreatedAt = article.CreatedAt,
-            PublishedAt = article.PublishedAt,
-
-        };
-    }
-
-    private static string GenerateSlug(string title)
-    {
-        // خیلی ساده: lowercase + trim + جایگزینی space با dash
-        var slug = title.Trim().ToLowerInvariant();
-
-        // حروف غیر مجاز رو حذف ساده
-        slug = new string(slug
-            .Select(ch => char.IsLetterOrDigit(ch) ? ch : '-')
-            .ToArray());
-
-        // چندتا - پشت سر هم رو یکی می‌کنیم
-        while (slug.Contains("--"))
-        {
-            slug = slug.Replace("--", "-");
+                Id = article.Id,
+                AuthorId = article.AuthorId,
+                Title = article.Title,
+                Slug = article.Slug,
+                Summary = article.Summary,
+                ContentMd = article.ContentMd,
+                HeaderImageUrl = article.HeaderImageUrl,
+                StatusId = article.StatusId,
+                ReadTimeMinutes = article.ReadTimeMinutes,
+                MetaTitle = article.MetaTitle,
+                MetaDescription = article.MetaDescription,
+                Keywords = article.Keywords,
+                CreatedAt = article.CreatedAt,
+                PublishedAt = article.PublishedAt,
+                Images = images
+                    .OrderBy(i => i.SortOrder)
+                    .Select(i => new ArticleImageDto
+                    {
+                        ImageUrl = i.ImageUrl,
+                        Caption = i.Caption,
+                        AltText = i.AltText,
+                        SortOrder = i.SortOrder ?? 0
+                    })
+                    .ToList()
+            };
         }
 
-        return slug.Trim('-');
-    }
+        #endregion
 
-    private static int CalculateReadTimeMinutes(string contentMd)
-    {
-        if (string.IsNullOrWhiteSpace(contentMd))
-            return 1;
+        #region GetPublished (list + search)
 
-        var words = contentMd
-            .Split((char[]?)null, StringSplitOptions.RemoveEmptyEntries);
-
-        var wordCount = words.Length;
-        var minutes = (int)Math.Ceiling(wordCount / 200.0);
-        return minutes <= 0 ? 1 : minutes;
-    }
-
-    public async Task<IReadOnlyList<ArticleDto>> GetPublishedAsync(
-    int page,
-    int pageSize,
-    CancellationToken cancellationToken = default)
-    {
-        var articles = await _repository.GetPublishedAsync(page, pageSize, cancellationToken);
-        var result = new List<ArticleDto>();
-        foreach (var a in articles)
+        public async Task<IReadOnlyList<ArticleDto>> GetPublishedAsync(
+            int page,
+            int pageSize,
+            string? search = null,
+            CancellationToken cancellationToken = default)
         {
-            var images = await _articleImageRepository.GetByArticleIdAsync(a.Id, cancellationToken);
-            result.Add(
-                new ArticleDto
+            if (page <= 0) page = 1;
+            if (pageSize <= 0) pageSize = 10;
+
+            // فعلاً امضای IArticleRepository را دست نمی‌زنیم
+            var articles = await _repository
+                .GetPublishedAsync(page, pageSize, cancellationToken);
+
+            // فیلتر ساده در لایه سرویس
+            if (!string.IsNullOrWhiteSpace(search))
+            {
+                var term = search.Trim();
+
+                articles = articles
+                    .Where(a =>
+                        (!string.IsNullOrEmpty(a.Title) && a.Title.Contains(term, StringComparison.OrdinalIgnoreCase)) ||
+                        (!string.IsNullOrEmpty(a.Summary) && a.Summary.Contains(term, StringComparison.OrdinalIgnoreCase)))
+                    .ToList();
+            }
+
+            var result = new List<ArticleDto>(articles.Count);
+
+            foreach (var a in articles)
+            {
+                result.Add(new ArticleDto
                 {
                     Id = a.Id,
                     AuthorId = a.AuthorId,
@@ -167,32 +179,65 @@ public class ArticleAppService : IArticleService
                     Keywords = a.Keywords,
                     CreatedAt = a.CreatedAt,
                     PublishedAt = a.PublishedAt,
-                    Images = images
-                .Select(img => new ArticleImageDto
-                {
-                    ImageUrl = img.ImageUrl,
-                    Caption = img.Caption,
-                    AltText = img.AltText,
-                    SortOrder = img.SortOrder ?? 0
-                })
-                .ToList()
+                    // برای لیست، فعلاً تصاویر را نمی‌آوریم (مثل قبل)
+                    Images = new List<ArticleImageDto>()
+                });
+            }
 
-                }
-            );
+            return result;
         }
-        return result;
 
+        #endregion
 
+        #region Approve
 
-    }
+        public async Task<bool> ApproveAsync(
+            Guid id,
+            CancellationToken cancellationToken = default)
+        {
+            var now = DateTimeOffset.UtcNow;
 
-    public async Task<bool> ApproveAsync(Guid id, CancellationToken cancellationToken = default)
-    {
-        var now = DateTimeOffset.UtcNow;
-        return await _repository.UpdateStatusAsync(
-            id,
-            PublishedStatusId,
-            now,
-            cancellationToken);
+            // این متد باید در ArticleRepository پیاده‌سازی شده باشد
+            return await _repository.UpdateStatusAsync(
+                id,
+                PublishedStatusId,
+                now,
+                cancellationToken);
+        }
+
+        #endregion
+
+        #region Helpers
+
+        private static int CalculateReadTime(string contentMd)
+        {
+            if (string.IsNullOrWhiteSpace(contentMd))
+                return 1;
+
+            var words = contentMd.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+            var minutes = (int)Math.Ceiling(words.Length / 200.0); // حدود ۲۰۰ کلمه در دقیقه
+
+            return Math.Max(minutes, 1);
+        }
+
+        private static string Slugify(string value)
+        {
+            if (string.IsNullOrWhiteSpace(value))
+                return string.Empty;
+
+            var slug = value.Trim().ToLowerInvariant();
+
+            // فاصله‌ها → خط تیره
+            slug = System.Text.RegularExpressions.Regex.Replace(slug, @"\s+", "-");
+            // حذف کاراکترهای غیر مجاز (حروف لاتین، اعداد و حروف فارسی را نگه می‌داریم)
+            slug = System.Text.RegularExpressions.Regex.Replace(
+                slug,
+                @"[^a-z0-9\-\u0600-\u06FF]",
+                string.Empty);
+
+            return slug;
+        }
+
+        #endregion
     }
 }

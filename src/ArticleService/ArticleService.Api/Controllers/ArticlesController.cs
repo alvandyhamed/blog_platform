@@ -9,6 +9,9 @@ using IdentityService.Grpc;
 
 namespace ArticleService.Api.Controllers;
 
+
+
+
 [ApiController]
 [Route("api/[controller]")]
 public class ArticlesController : ControllerBase
@@ -19,6 +22,9 @@ public class ArticlesController : ControllerBase
     {
         _articleService = articleService;
     }
+
+
+
 
     // ساخت مقاله جدید – فقط Author و Admin
     [HttpPost]
@@ -52,20 +58,40 @@ public class ArticlesController : ControllerBase
 
         return Ok(article);
     }
-    // لیست مقالات منتشرشده – برای کاربرهای عادی
+
+
+    // لیست مقالات پابلیش شده با سرچ و صفحه‌بندی
     [HttpGet]
     [AllowAnonymous]
-    public async Task<IActionResult> GetPublished(
+    public async Task<ActionResult<PagedResult<ArticleDto>>> GetPublished(
         [FromQuery] int page = 1,
         [FromQuery] int pageSize = 10,
+        [FromQuery(Name = "q")] string? search = null,
         CancellationToken cancellationToken = default)
     {
-        if (page <= 0) page = 1;
-        if (pageSize <= 0 || pageSize > 50) pageSize = 10;
+        var result = await _articleService.GetPublishedAsync(
+            page,
+            pageSize,
+            search,
+            cancellationToken);
 
-        var articles = await _articleService.GetPublishedAsync(page, pageSize, cancellationToken);
-        return Ok(articles);
+        return Ok(result);
     }
+
+    // // لیست مقالات منتشرشده – برای کاربرهای عادی
+    // [HttpGet]
+    // [AllowAnonymous]
+    // public async Task<IActionResult> GetPublished(
+    //     [FromQuery] int page = 1,
+    //     [FromQuery] int pageSize = 10,
+    //     CancellationToken cancellationToken = default)
+    // {
+    //     if (page <= 0) page = 1;
+    //     if (pageSize <= 0 || pageSize > 50) pageSize = 10;
+
+    //     var articles = await _articleService.GetPublishedAsync(page, pageSize, null, cancellationToken);
+    //     return Ok(articles);
+    // }
     // تأیید (Publish) مقاله – فقط Admin
     [HttpPost("{id:guid}/approve")]
     [Authorize(Roles = "Admin")]
