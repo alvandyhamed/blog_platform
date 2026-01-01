@@ -91,6 +91,8 @@ builder.Services.AddSingleton<IDbConnectionFactory>(_ =>
 builder.Services.AddScoped<IArticleRepository, ArticleRepository>();
 builder.Services.AddScoped<IArticleService, ArticleAppService>();
 builder.Services.AddScoped<IArticleImageRepository, ArticleImageRepository>();
+builder.Services.AddScoped<IArticleLikeRepository, ArticleLikeRepository>();
+builder.Services.AddScoped<IArticleCommentRepository, ArticleCommentRepository>();
 
 // JWT Authentication (هم‌خوان با IdentityService)
 var jwtSection = configuration.GetSection("Jwt");

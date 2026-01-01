@@ -39,5 +39,22 @@ namespace ArticleService.Application.Services
         Task<bool> ApproveAsync(
             Guid id,
             CancellationToken cancellationToken = default);
+        Task<LikeResultDto> ToggleReactionAsync(
+            Guid articleId,
+            Guid userId,
+            bool isLike,
+            CancellationToken cancellationToken = default);
+
+        Task<long> AddCommentAsync(
+Guid articleId,
+Guid userId,
+string content,
+CancellationToken cancellationToken = default);
+
+        Task<IReadOnlyList<ArticleCommentDto>> GetCommentsAsync(
+            Guid articleId,
+            CancellationToken cancellationToken = default);
+
     }
+
 }

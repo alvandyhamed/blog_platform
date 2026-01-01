@@ -4,10 +4,13 @@ using ArticleService.Application.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
 using IdentityService.Grpc;
 
+
+
 namespace ArticleService.Api.Controllers;
+
+
 
 
 
@@ -17,6 +20,20 @@ namespace ArticleService.Api.Controllers;
 public class ArticlesController : ControllerBase
 {
     private readonly IArticleService _articleService;
+
+    private bool TryGetUserId(out Guid userId)
+    {
+        userId = Guid.Empty;
+
+        var userIdClaim =
+            User.FindFirst(JwtRegisteredClaimNames.Sub) ??
+            User.FindFirst(ClaimTypes.NameIdentifier);
+
+        if (userIdClaim == null)
+            return false;
+
+        return Guid.TryParse(userIdClaim.Value, out userId);
+    }
 
     public ArticlesController(IArticleService articleService)
     {
@@ -121,6 +138,64 @@ public class ArticlesController : ControllerBase
             new GetUserByIdRequest { Id = userIdClaim.Value });
 
         return Ok(reply);
+    }
+
+    // POST /api/Articles/{id}/like
+    [HttpPost("{id:guid}/like")]
+    [Authorize]
+    public async Task<IActionResult> Like(Guid id, CancellationToken cancellationToken)
+    {
+        if (!TryGetUserId(out var userId))
+            return Unauthorized("Invalid user id in token.");
+
+        var result = await _articleService.ToggleReactionAsync(id, userId, true, cancellationToken);
+        return Ok(result); // { likes, dislikes }
+    }
+    // POST /api/Articles/{id}/dislike
+    [HttpPost("{id:guid}/dislike")]
+    [Authorize]
+    public async Task<IActionResult> Dislike(Guid id, CancellationToken cancellationToken)
+    {
+        if (!TryGetUserId(out var userId))
+            return Unauthorized("Invalid user id in token.");
+
+        var result = await _articleService.ToggleReactionAsync(id, userId, false, cancellationToken);
+        return Ok(result);
+    }
+    public class AddCommentRequest
+    {
+        public string Content { get; set; } = default!;
+    }
+
+    // POST /api/Articles/{id}/comments
+    [HttpPost("{id:guid}/comments")]
+    [Authorize]
+    public async Task<IActionResult> AddComment(
+        Guid id,
+        [FromBody] AddCommentRequest request,
+        CancellationToken cancellationToken)
+    {
+        if (string.IsNullOrWhiteSpace(request.Content))
+            return BadRequest("Content is required.");
+
+        if (!TryGetUserId(out var userId))
+            return Unauthorized("Invalid user id in token.");
+
+        var commentId = await _articleService.AddCommentAsync(
+            id, userId, request.Content, cancellationToken);
+
+        return CreatedAtAction(
+            nameof(GetComments),
+            new { id },
+            new { id = commentId });
+    }
+    // GET /api/Articles/{id}/comments
+    [HttpGet("{id:guid}/comments")]
+    [AllowAnonymous] // اگر می‌خواهی فقط لاگین‌ها ببینند، این رو بردار
+    public async Task<IActionResult> GetComments(Guid id, CancellationToken cancellationToken)
+    {
+        var comments = await _articleService.GetCommentsAsync(id, cancellationToken);
+        return Ok(comments);
     }
 
 }

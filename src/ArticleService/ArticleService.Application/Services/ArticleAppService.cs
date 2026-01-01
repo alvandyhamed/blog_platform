@@ -13,6 +13,8 @@ namespace ArticleService.Application.Services
     {
         private readonly IArticleRepository _repository;
         private readonly IArticleImageRepository _articleImageRepository;
+        private readonly IArticleLikeRepository _likeRepository;
+        private readonly IArticleCommentRepository _commentRepository;
 
         // Draft = 1, PendingReview = 2, Published = 3, Rejected = 4
         private const short PendingReviewStatusId = 2;
@@ -20,10 +22,19 @@ namespace ArticleService.Application.Services
 
         public ArticleAppService(
             IArticleRepository repository,
-            IArticleImageRepository articleImageRepository)
+            IArticleImageRepository articleImageRepository,
+            IArticleLikeRepository likeRepository,
+            IArticleCommentRepository commentRepository
+
+
+
+            )
+
         {
             _repository = repository;
             _articleImageRepository = articleImageRepository;
+            _likeRepository = likeRepository;
+            _commentRepository = commentRepository;
         }
 
         #region Create
@@ -238,6 +249,62 @@ namespace ArticleService.Application.Services
             return slug;
         }
 
+        public async Task<LikeResultDto> ToggleReactionAsync(
+        Guid articleId,
+        Guid userId,
+        bool isLike,
+        CancellationToken cancellationToken = default)
+        {
+            var (likes, dislikes) = await _likeRepository.ToggleAsync(
+            articleId, userId, isLike, cancellationToken);
+
+            return new LikeResultDto
+            {
+                Likes = likes,
+                Dislikes = dislikes
+            };
+
+
+        }
+
+        public async Task<long> AddCommentAsync(
+            Guid articleId,
+            Guid userId,
+            string content,
+             CancellationToken cancellationToken = default)
+        {
+            var comment = new ArticleComment
+            {
+                ArticleId = articleId,
+                UserId = userId,
+                Content = content,
+                ParentId = null,
+                CreatedAt = DateTimeOffset.UtcNow
+            };
+            return await _commentRepository.AddAsync(comment, cancellationToken);
+        }
+
+        public async Task<IReadOnlyList<ArticleCommentDto>> GetCommentsAsync(
+            Guid articleId,
+            CancellationToken cancellationToken = default)
+        {
+            var comments = await _commentRepository.GetByArticleIdAsync(articleId, cancellationToken);
+            return comments
+           .Select(c => new ArticleCommentDto
+           {
+               Id = c.Id,
+               ArticleId = c.ArticleId,
+               UserId = c.UserId,
+               Content = c.Content,
+               CreatedAt = c.CreatedAt
+           })
+           .ToList();
+
+        }
+
         #endregion
     }
+
+
+
 }
