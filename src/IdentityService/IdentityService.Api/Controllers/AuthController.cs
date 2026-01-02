@@ -1,4 +1,7 @@
+
+using IdentityService.Api.Models;
 using IdentityService.Application.Auth;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace IdentityService.Api.Controllers;
@@ -23,7 +26,7 @@ public class AuthController : ControllerBase
     {
         var redirectUri = "http://localhost:5089/api/auth/google/callback";
 
-        var result = await _googleAuthService.HandleCallbackAsync(code, redirectUri);
+        var result = await _googleAuthService.HandleCallbackAsync(code, redirectUri, HttpContext.RequestAborted);
 
         return Ok(new
         {
@@ -35,6 +38,48 @@ public class AuthController : ControllerBase
                 name = result.User.DisplayName,
                 avatar = result.User.AvatarUrl,
                 roles = result.Roles
+            }
+        });
+    }
+    // POST: /api/auth/google
+    [HttpPost("google")]
+    [AllowAnonymous]
+    public async Task<IActionResult> SignInWithGoogle(
+        [FromBody] GoogleSignInRequest request,
+        CancellationToken cancellationToken)
+    {
+        if (string.IsNullOrWhiteSpace(request.Code))
+            return BadRequest("code is required");
+
+        var googleResult = await _googleAuthService.HandleCallbackAsync(
+            request.Code,
+            request.RedirectUri,
+            cancellationToken);
+
+        if (!googleResult.Success || googleResult.User is null)
+            return Unauthorized(googleResult.ErrorMessage ?? "Google auth failed.");
+
+        var g = googleResult.User;
+
+        // -------------------------------
+        // TODO: اینجا می‌تونی لاجیک واقعی‌ت رو بذاری:
+        //  - اگر کاربر با این Email وجود داشت، بیار
+        //  - اگر نبود، یوزر جدید بساز
+        //  - بعد با JwtTokenGenerator خودت براش JWT بساز
+        //
+        // فعلاً برای این‌که سیستم کار کنه، یه توکن دامی برمی‌گردونیم.
+        // -------------------------------
+        var dummyJwt = $"google-jwt-for-{g.Email}";
+
+        return Ok(new
+        {
+            token = dummyJwt,
+            user = new
+            {
+                email = g.Email,
+                name = g.DisplayName,
+                picture = g.AvatarUrl,
+                provider = "Google"
             }
         });
     }

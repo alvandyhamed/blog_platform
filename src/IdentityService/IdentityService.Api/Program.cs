@@ -10,13 +10,24 @@ using Microsoft.OpenApi.Models;
 using IdentityService.Api.Grpc;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 
+
+
 var builder = WebApplication.CreateBuilder(args);
+var configuration = builder.Configuration;
 
 // Add services to the container.
 builder.Services.AddControllers();
 
+
 // Swagger برای REST
 builder.Services.AddEndpointsApiExplorer();
+
+// Bind Google options
+builder.Services.Configure<GoogleOAuthOptions>(
+    configuration.GetSection("GoogleOAuth"));
+
+// HttpClient مخصوص GoogleAuthService
+builder.Services.AddHttpClient<IGoogleAuthService, GoogleAuthService>();
 
 
 

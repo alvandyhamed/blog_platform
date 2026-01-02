@@ -1,20 +1,23 @@
-using IdentityService.Application.Interfaces;
+using System.Threading;
+using System.Threading.Tasks;
+using IdentityService.Application.Auth;
 
 namespace IdentityService.Infrastructure.Auth;
 
-// فقط برای تست، بعداً با سرویس واقعی گوگل عوضش می‌کنیم
 public class DummyGoogleOAuthService : IGoogleOAuthService
 {
-    public Task<GoogleUserInfo> GetUserInfoFromAuthCodeAsync(string code, string redirectUri)
+    public Task<GoogleUserInfo> GetUserInfoFromAuthCodeAsync(
+        string code,
+        string redirectUri,
+        CancellationToken ct = default)
     {
-        // در محیط واقعی به Google token endpoint می‌زنی؛
-        // فعلاً یه یوزر فیک می‌سازیم برای تست.
+        // اینجا به‌جای درخواست واقعی به گوگل، یه یوزر فیک می‌سازیم
         var user = new GoogleUserInfo
         {
-            Sub = "dummy-google-id-" + code,
             Email = $"user_{code}@example.com",
             Name = "Dummy User",
-            Picture = null
+            Picture = null,
+            Sub = $"dummy-google-id-{code}"
         };
 
         return Task.FromResult(user);

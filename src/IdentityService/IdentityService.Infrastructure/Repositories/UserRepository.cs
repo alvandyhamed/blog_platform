@@ -1,13 +1,8 @@
-
+using System.Data;
 using Dapper;
 using IdentityService.Application.Interfaces;
 using IdentityService.Domain.Entities;
 using IdentityService.Infrastructure.Data;
-using System;
-using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
-using Dapper;
 
 namespace IdentityService.Infrastructure.Repositories;
 
@@ -20,7 +15,7 @@ public class UserRepository : IUserRepository
         _connectionFactory = connectionFactory;
     }
 
-    public async Task<User?> GetByIdAsync(Guid id)
+    public async Task<User?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
     {
         using var conn = _connectionFactory.CreateConnection();
         const string sql = @"
@@ -33,7 +28,7 @@ public class UserRepository : IUserRepository
         return await conn.QuerySingleOrDefaultAsync<User>(sql, new { id });
     }
 
-    public async Task<User?> GetByGoogleIdAsync(string googleId)
+    public async Task<User?> GetByGoogleIdAsync(string googleId, CancellationToken cancellationToken = default)
     {
         using var conn = _connectionFactory.CreateConnection();
         const string sql = @"
@@ -46,7 +41,7 @@ public class UserRepository : IUserRepository
         return await conn.QuerySingleOrDefaultAsync<User>(sql, new { googleId });
     }
 
-    public async Task<User?> GetByEmailAsync(string email)
+    public async Task<User?> GetByEmailAsync(string email, CancellationToken cancellationToken = default)
     {
         using var conn = _connectionFactory.CreateConnection();
         const string sql = @"
@@ -59,7 +54,7 @@ public class UserRepository : IUserRepository
         return await conn.QuerySingleOrDefaultAsync<User>(sql, new { email });
     }
 
-    public async Task AddAsync(User user)
+    public async Task AddAsync(User user, CancellationToken cancellationToken = default)
     {
         using var conn = _connectionFactory.CreateConnection();
         const string sql = @"
@@ -73,15 +68,15 @@ public class UserRepository : IUserRepository
         await conn.ExecuteAsync(sql, user);
     }
 
-    public async Task UpdateAsync(User user)
+    public async Task UpdateAsync(User user, CancellationToken cancellationToken = default)
     {
         using var conn = _connectionFactory.CreateConnection();
         const string sql = @"
             UPDATE users
-            SET email        = @Email,
-                display_name = @DisplayName,
-                avatar_url   = @AvatarUrl,
-                is_active    = @IsActive,
+            SET email         = @Email,
+                display_name  = @DisplayName,
+                avatar_url    = @AvatarUrl,
+                is_active     = @IsActive,
                 last_login_at = @LastLoginAt
             WHERE id = @Id;";
 
@@ -89,25 +84,20 @@ public class UserRepository : IUserRepository
     }
 
     public async Task<IReadOnlyList<string>> GetUserRolesAsync(
-    Guid userId,
-    CancellationToken cancellationToken = default)
+        Guid userId,
+        CancellationToken cancellationToken = default)
     {
         const string sql = @"
-SELECT r.name
-FROM user_roles ur
-JOIN roles r ON ur.role_id = r.id
-WHERE ur.user_id = @UserId;
-";
+            SELECT r.name
+            FROM user_roles ur
+            JOIN roles r ON ur.role_id = r.id
+            WHERE ur.user_id = @UserId;
+        ";
 
         using var conn = _connectionFactory.CreateConnection();
-        conn.Open();
-
         var result = await conn.QueryAsync<string>(
-            new CommandDefinition(
-                sql,
-                new { UserId = userId },
-                cancellationToken: cancellationToken
-            ));
+            new CommandDefinition(sql, new { UserId = userId }, cancellationToken: cancellationToken)
+        );
 
         return result.AsList();
     }

@@ -63,3 +63,5 @@
 /Users/hamed/Documents/MySource/BlogPlatform/src/IdentityService/IdentityService.Api/obj/Debug/net9.0/IdentityService.Api.pdb
 /Users/hamed/Documents/MySource/BlogPlatform/src/IdentityService/IdentityService.Api/obj/Debug/net9.0/IdentityService.Api.genruntimeconfig.cache
 /Users/hamed/Documents/MySource/BlogPlatform/src/IdentityService/IdentityService.Api/obj/Debug/net9.0/ref/IdentityService.Api.dll
+/Users/hamed/Documents/MySource/BlogPlatform/src/IdentityService/IdentityService.Api/bin/Debug/net9.0/Microsoft.Extensions.Logging.Abstractions.dll
+/Users/hamed/Documents/MySource/BlogPlatform/src/IdentityService/IdentityService.Api/bin/Debug/net9.0/System.Diagnostics.DiagnosticSource.dll

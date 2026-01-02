@@ -1,81 +1,166 @@
+using System.Net.Http;
+using System.Net.Http.Json;
+using System.Text.Json.Serialization;
 using IdentityService.Application.Interfaces;
 using IdentityService.Domain.Entities;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 
 namespace IdentityService.Application.Auth;
 
-public class GoogleAuthResult
+// -------------------------
+// Options + DTOs
+// -------------------------
+public sealed class GoogleOAuthOptions
 {
-    public string Token { get; set; } = null!;
-    public User User { get; set; } = null!;
-    public IEnumerable<string> Roles { get; set; } = Enumerable.Empty<string>();
+    public string ClientId { get; set; } = null!;
+    public string ClientSecret { get; set; } = null!;
+    public string TokenEndpoint { get; set; } = "https://oauth2.googleapis.com/token";
+    public string UserInfoEndpoint { get; set; } = "https://www.googleapis.com/oauth2/v2/userinfo";
 }
 
-public class GoogleAuthService
+public sealed class GoogleTokenResponse
+{
+    [JsonPropertyName("access_token")] public string AccessToken { get; set; } = null!;
+    [JsonPropertyName("id_token")] public string IdToken { get; set; } = null!;
+    [JsonPropertyName("token_type")] public string? TokenType { get; set; }
+    [JsonPropertyName("expires_in")] public int ExpiresIn { get; set; }
+}
+
+public sealed class GoogleUserInfo
+{
+    [JsonPropertyName("email")] public string Email { get; set; } = null!;
+    [JsonPropertyName("name")] public string Name { get; set; } = null!;
+    [JsonPropertyName("picture")] public string Picture { get; set; } = null!;
+    [JsonPropertyName("Sub")] public string Sub { get; set; } = null!;
+}
+
+public sealed class GoogleAuthResult
+{
+    public bool Success { get; set; }
+    public string? ErrorMessage { get; set; }
+    public string? Token { get; set; }
+    public User? User { get; set; }
+    public IReadOnlyList<string> Roles { get; set; } = Array.Empty<string>();
+}
+
+// -------------------------
+// Interface ها
+// -------------------------
+public interface IGoogleOAuthService
+{
+    Task<GoogleUserInfo?> GetUserInfoFromAuthCodeAsync(string code, string redirectUri, CancellationToken ct);
+}
+
+public interface IGoogleAuthService
+{
+    Task<GoogleAuthResult> HandleCallbackAsync(string code, string redirectUri, CancellationToken cancellationToken);
+}
+
+// -------------------------
+// ارتباط مستقیم با Google
+// -------------------------
+public sealed class GoogleOAuthService : IGoogleOAuthService
+{
+    private readonly HttpClient _client;
+    private readonly GoogleOAuthOptions _options;
+
+    public GoogleOAuthService(HttpClient client, IOptions<GoogleOAuthOptions> options)
+    {
+        _client = client;
+        _options = options.Value;
+    }
+
+    public async Task<GoogleUserInfo?> GetUserInfoFromAuthCodeAsync(string code, string redirectUri, CancellationToken ct)
+    {
+        var form = new Dictionary<string, string>
+        {
+            ["code"] = code,
+            ["client_id"] = _options.ClientId,
+            ["client_secret"] = _options.ClientSecret,
+            ["redirect_uri"] = redirectUri,
+            ["grant_type"] = "authorization_code"
+        };
+
+        var tokenRes = await _client.PostAsync(_options.TokenEndpoint, new FormUrlEncodedContent(form), ct);
+        if (!tokenRes.IsSuccessStatusCode)
+            return null;
+
+        var tokenData = await tokenRes.Content.ReadFromJsonAsync<GoogleTokenResponse>(cancellationToken: ct);
+        if (tokenData?.AccessToken is null)
+            return null;
+
+        var userReq = new HttpRequestMessage(HttpMethod.Get, _options.UserInfoEndpoint);
+        userReq.Headers.Authorization =
+            new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", tokenData.AccessToken);
+
+        var userRes = await _client.SendAsync(userReq, ct);
+        if (!userRes.IsSuccessStatusCode)
+            return null;
+
+        return await userRes.Content.ReadFromJsonAsync<GoogleUserInfo>(cancellationToken: ct);
+    }
+}
+
+// -------------------------
+// سرویس نهایی: ساخت یوزر + نقش + JWT
+// -------------------------
+public sealed class GoogleAuthService : IGoogleAuthService
 {
     private readonly IUserRepository _userRepository;
-    private readonly IRoleRepository _roleRepository;
-    private readonly IUserRoleRepository _userRoleRepository;
-    private readonly IGoogleOAuthService _googleOAuthService;
-    private readonly IJwtTokenGenerator _jwtTokenGenerator;
+    private readonly IUserRoleRepository _roleRepository;
+    private readonly IGoogleOAuthService _oauth;
+    private readonly IJwtTokenGenerator _jwt;
 
     public GoogleAuthService(
         IUserRepository userRepository,
-        IRoleRepository roleRepository,
-        IUserRoleRepository userRoleRepository,
-        IGoogleOAuthService googleOAuthService,
-        IJwtTokenGenerator jwtTokenGenerator)
+        IUserRoleRepository roleRepository,
+        IGoogleOAuthService oauth,
+        IJwtTokenGenerator jwt)
     {
         _userRepository = userRepository;
         _roleRepository = roleRepository;
-        _userRoleRepository = userRoleRepository;
-        _googleOAuthService = googleOAuthService;
-        _jwtTokenGenerator = jwtTokenGenerator;
+        _oauth = oauth;
+        _jwt = jwt;
     }
 
-    public async Task<GoogleAuthResult> HandleCallbackAsync(string code, string redirectUri)
+    public async Task<GoogleAuthResult> HandleCallbackAsync(string code, string redirectUri, CancellationToken cancellationToken)
     {
-        // 1) گرفتن اطلاعات کاربر از گوگل
-        var googleUser = await _googleOAuthService.GetUserInfoFromAuthCodeAsync(code, redirectUri);
+        // 1) دریافت اطلاعات از گوگل
+        var googleUser = await _oauth.GetUserInfoFromAuthCodeAsync(code, redirectUri, cancellationToken);
+        if (googleUser is null)
+            return new() { Success = false, ErrorMessage = "Google login failed" };
 
-        // 2) پیدا کردن کاربر یا ساختن جدید
-        var user = await _userRepository.GetByGoogleIdAsync(googleUser.Sub);
+        // 2) پیدا کردن یا ساخت کاربر
+        var user = await _userRepository.GetByEmailAsync(googleUser.Email);
         if (user is null)
         {
-            user = new User(
-                googleUser.Sub,
-                googleUser.Email,
-                googleUser.Name,
-                googleUser.Picture
-            );
+            user = new User
+            {
+                Id = Guid.NewGuid(),
+                GoogleId = googleUser.Sub,
+                Email = googleUser.Email,
+                DisplayName = googleUser.Name,
+                AvatarUrl = googleUser.Picture,
+                IsActive = true,
+                CreatedAt = DateTime.UtcNow
+            };
 
             await _userRepository.AddAsync(user);
-
-            // نقش پیش‌فرض: Author
-            var authorRole = await _roleRepository.GetByNameAsync(Role.Names.Author)
-                            ?? throw new InvalidOperationException("Author role not seeded");
-
-            var userRole = new UserRole(user.Id, authorRole.Id);
-            await _userRoleRepository.AssignRoleAsync(userRole);
-        }
-        else
-        {
-            user.DisplayName = googleUser.Name ?? user.DisplayName;
-            user.AvatarUrl = googleUser.Picture ?? user.AvatarUrl;
-            user.LastLoginAt = DateTime.UtcNow;
-
-            await _userRepository.UpdateAsync(user);
+            await _roleRepository.AddRoleToUserAsync(user.Id, "Author");
         }
 
         // 3) گرفتن نقش‌های کاربر
-        var roles = (await _userRoleRepository.GetRolesForUserAsync(user.Id))
-                    .Select(r => r.Name)
-                    .ToList();
+        var roles = (await _roleRepository.GetRolesForUserAsync(user.Id))
+                        .Select(r => r.Name)
+                        .ToList();
 
         // 4) ساخت JWT
-        var token = _jwtTokenGenerator.GenerateToken(user, roles);
+        var token = _jwt.GenerateToken(user, roles);
 
         return new GoogleAuthResult
         {
+            Success = true,
             Token = token,
             User = user,
             Roles = roles
