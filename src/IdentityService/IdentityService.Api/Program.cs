@@ -86,15 +86,16 @@ builder.Services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
 // Application services
 builder.Services.AddScoped<GoogleAuthService>();
 
-// TODO: بعداً GoogleOAuthService واقعی رو پیاده می‌کنیم
-if (builder.Environment.IsDevelopment())
-{
-    builder.Services.AddSingleton<IGoogleOAuthService, DummyGoogleOAuthService>();
-}
-else
-{
-    builder.Services.AddHttpClient<IGoogleOAuthService, GoogleOAuthService>();
-}
+// // TODO: بعداً GoogleOAuthService واقعی رو پیاده می‌کنیم
+// if (builder.Environment.IsDevelopment())
+// {
+//     builder.Services.AddSingleton<IGoogleOAuthService, DummyGoogleOAuthService>();
+// }
+// else
+// {
+//     builder.Services.AddHttpClient<IGoogleOAuthService, GoogleOAuthService>();
+// }
+builder.Services.AddHttpClient<IGoogleOAuthService, GoogleOAuthService>();
 
 // TODO: بعداً اینجا DI برای لایه های Application/Infrastructure رو اضافه می‌کنیم
 // مثل:

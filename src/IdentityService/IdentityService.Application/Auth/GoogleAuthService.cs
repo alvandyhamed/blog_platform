@@ -84,7 +84,10 @@ public sealed class GoogleOAuthService : IGoogleOAuthService
 
         var tokenRes = await _client.PostAsync(_options.TokenEndpoint, new FormUrlEncodedContent(form), ct);
         if (!tokenRes.IsSuccessStatusCode)
-            return null;
+        {
+            var body = await tokenRes.Content.ReadAsStringAsync(ct);
+            throw new Exception($"Google token exchange failed: {(int)tokenRes.StatusCode} {tokenRes.ReasonPhrase} |{body}");
+        }
 
         var tokenData = await tokenRes.Content.ReadFromJsonAsync<GoogleTokenResponse>(cancellationToken: ct);
         if (tokenData?.AccessToken is null)
@@ -97,8 +100,11 @@ public sealed class GoogleOAuthService : IGoogleOAuthService
         var userRes = await _client.SendAsync(userReq, ct);
         if (!userRes.IsSuccessStatusCode)
             return null;
+        var user = await userRes.Content.ReadFromJsonAsync<GoogleUserInfo>(cancellationToken: ct);
+        if (user is null || string.IsNullOrWhiteSpace(user.Sub) || string.IsNullOrWhiteSpace(user.Email))
+            return null;
 
-        return await userRes.Content.ReadFromJsonAsync<GoogleUserInfo>(cancellationToken: ct);
+        return user;
     }
 }
 
@@ -131,8 +137,17 @@ public sealed class GoogleAuthService : IGoogleAuthService
         if (googleUser is null)
             return new() { Success = false, ErrorMessage = "Google login failed" };
 
+        var googleId = googleUser.Sub!;
+        var email = googleUser.Email!;
+        var name = googleUser.Name ?? "User";
+        var picture = googleUser.Picture;
+
         // 2) پیدا کردن یا ساخت کاربر
-        var user = await _userRepository.GetByEmailAsync(googleUser.Email);
+
+        var user = await _userRepository.GetByGoogleIdAsync(googleId);
+        if (user is null)
+            user = await _userRepository.GetByEmailAsync(email);
+
         if (user is null)
         {
             user = new User
@@ -149,11 +164,23 @@ public sealed class GoogleAuthService : IGoogleAuthService
             await _userRepository.AddAsync(user);
             await _roleRepository.AddRoleToUserAsync(user.Id, "Author");
         }
+        else
+        {
+            if (string.IsNullOrWhiteSpace(user.GoogleId))
+            {
+                user.GoogleId = googleId;
+                await _userRepository.UpdateAsync(user);
+            }
+
+        }
 
         // 3) گرفتن نقش‌های کاربر
         var roles = (await _roleRepository.GetRolesForUserAsync(user.Id))
                         .Select(r => r.Name)
+                        .Where(x => !string.IsNullOrWhiteSpace(x))
                         .ToList();
+        if (roles.Count == 0)
+            roles.Add("Author");
 
         // 4) ساخت JWT
         var token = _jwt.GenerateToken(user, roles);

@@ -1,6 +1,8 @@
 
+using System.Security.Claims;
 using IdentityService.Api.Models;
 using IdentityService.Application.Auth;
+using IdentityService.Application.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -12,11 +14,23 @@ public class AuthController : ControllerBase
 {
     private readonly GoogleAuthService _googleAuthService;
     private readonly IConfiguration _configuration;
+    private readonly IUserRoleRepository _roleRepository;
+    private readonly IUserRepository _userRepository;
 
-    public AuthController(GoogleAuthService googleAuthService, IConfiguration configuration)
+
+    // public AuthController(GoogleAuthService googleAuthService, IConfiguration configuration)
+    // {
+    //     _googleAuthService = googleAuthService;
+    //     _configuration = configuration;
+    // }
+    public AuthController(
+    GoogleAuthService googleAuthService,
+    IUserRoleRepository roleRepository,
+    IUserRepository userRepository)
     {
         _googleAuthService = googleAuthService;
-        _configuration = configuration;
+        _roleRepository = roleRepository;
+        _userRepository = userRepository;
     }
 
     // فقط برای تست معماری / DB / JWT
@@ -24,9 +38,11 @@ public class AuthController : ControllerBase
     [HttpGet("google/callback")]
     public async Task<IActionResult> GoogleCallback([FromQuery] string code)
     {
-        var redirectUri = "http://localhost:5089/api/auth/google/callback";
+        var redirectUri = "http://localhost:3000/auth/callback";
 
         var result = await _googleAuthService.HandleCallbackAsync(code, redirectUri, HttpContext.RequestAborted);
+        if (!result.Success || result.User is null)
+            return Unauthorized(result.ErrorMessage ?? "Google auth failed.");
 
         return Ok(new
         {
@@ -73,7 +89,7 @@ public class AuthController : ControllerBase
 
         return Ok(new
         {
-            token = dummyJwt,
+            token = googleResult.Token,
             user = new
             {
                 email = g.Email,
@@ -83,4 +99,44 @@ public class AuthController : ControllerBase
             }
         });
     }
+    // ===============================
+    // GET /api/Auth/user
+    // ===============================
+    [HttpGet("user")]
+    [Authorize]
+    public async Task<ActionResult<UserProfileResponse>> GetCurrentUser(
+        CancellationToken cancellationToken)
+    {
+        // 1) گرفتن userId از JWT
+        var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)
+                         ?? User.FindFirst("sub");
+
+        if (userIdClaim is null)
+            return Unauthorized();
+
+        if (!Guid.TryParse(userIdClaim.Value, out var userId))
+            return Unauthorized();
+
+        // 2) گرفتن یوزر از دیتابیس
+        var user = await _userRepository.GetByIdAsync(userId);
+        if (user is null)
+            return NotFound();
+
+        // 3) گرفتن رول‌ها
+        var roles = await _roleRepository.GetRolesForUserAsync(userId);
+        var roleName = roles.FirstOrDefault()?.Name ?? "user";
+
+        // 4) پاسخ
+        return Ok(new UserProfileResponse
+        {
+            Id = user.Id,
+            Email = user.Email,
+            Name = user.DisplayName ?? user.Email.Split('@')[0],
+            Display_Name = user.DisplayName ?? "",
+            Avatar_Url = user.AvatarUrl,
+            Role = roleName
+        });
+    }
+
+
 }

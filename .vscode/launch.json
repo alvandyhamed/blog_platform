@@ -17,6 +17,23 @@
             "env": {
                 "ASPNETCORE_ENVIRONMENT": "Development"
             }
+        },
+        {
+            "name": ".NET Launch - IdentityService.Api",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build-all",
+            "program": "${workspaceFolder}/src/IdentityService/IdentityService.Api/bin/Debug/net9.0/IdentityService.Api.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}/src/IdentityService/IdentityService.Api",
+            "stopAtEntry": false,
+            "serverReadyAction": {
+                "action": "openExternally",
+                "pattern": "\\bNow listening on:\\s+(https?://\\S+)"
+            },
+            "env": {
+                "ASPNETCORE_ENVIRONMENT": "Development"
+            }
         }
     ]
 }
